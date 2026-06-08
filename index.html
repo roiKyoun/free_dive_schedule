@@ -287,7 +287,19 @@ create policy "읽기_cl"   on confirmed_lessons for select using (true);`;
    STATE
 ════════════════════════════════════════ */
 let sb=null, sbAdmin=null;
-let cfg = lsJ('fd_cfg') || null;
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   ▼▼▼ 여기에 Supabase 키를 넣으세요 ▼▼▼
+   url    : Supabase 프로젝트 URL
+   anonKey: Settings → API Keys → Legacy 탭 → anon key (eyJ...로 시작)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+const PRESET = {
+  url:     'https://azbkjduhazribkutpttz.supabase.co',
+  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6YmtqZHVoYXpyaWJrdXRwdHR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MjQ5NTAsImV4cCI6MjA5NjUwMDk1MH0.iRgtBg5Bhyf3VoltueO4D7TKoSpedCDeeqVgxMZBdMY'   // ← 여기에 anon key 붙여넣기
+};
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+
+let cfg = lsJ('fd_cfg') || (PRESET.anonKey ? PRESET : null);
 let admK = ls('fd_adm') || '';
 let curYear = new Date().getFullYear();
 let curMonth = new Date().getMonth();
