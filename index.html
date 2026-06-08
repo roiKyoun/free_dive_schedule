@@ -18,19 +18,16 @@ body{background:var(--bg);color:var(--t1);font-family:'DM Sans',sans-serif;min-h
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(ellipse 60% 50% at 10% 15%,rgba(0,200,236,.06) 0%,transparent 70%),
              radial-gradient(ellipse 50% 40% at 90% 85%,rgba(167,139,250,.05) 0%,transparent 70%);}
-
-/* ── Header ── */
 header{position:sticky;top:0;z-index:50;background:rgba(5,14,26,.94);
   backdrop-filter:blur(18px);border-bottom:1px solid var(--b);
-  padding:12px 18px;display:flex;align-items:center;justify-content:space-between;}
+  padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--cyan);
-  text-shadow:0 0 20px rgba(0,200,236,.45);line-height:1;}
+  text-shadow:0 0 20px rgba(0,200,236,.45);line-height:1;flex-shrink:0;}
 .logo small{display:block;font-family:'DM Sans',sans-serif;font-size:10px;font-weight:300;
   letter-spacing:2px;color:var(--t3);text-transform:uppercase;}
-
-/* ── Buttons ── */
-.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 15px;border-radius:9px;
-  border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;transition:all .18s;}
+.hbtns{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end;}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:9px;
+  border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;transition:all .18s;}
 .btn-primary{background:var(--cyan);color:#050e1a;}
 .btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px);}
 .btn-ghost{background:transparent;color:var(--t2);border:1px solid var(--b);}
@@ -39,35 +36,30 @@ header{position:sticky;top:0;z-index:50;background:rgba(5,14,26,.94);
 .btn-success:hover{filter:brightness(1.08);}
 .btn-danger{background:transparent;color:var(--red);border:1px solid rgba(239,68,68,.25);}
 .btn-danger:hover{background:rgba(239,68,68,.1);}
-.btn-sm{padding:5px 11px;font-size:12px;}
+.btn-warn{background:rgba(245,158,11,.15);color:var(--amber);border:1px solid rgba(245,158,11,.3);}
+.btn-warn:hover{background:rgba(245,158,11,.25);}
+.btn-sm{padding:4px 10px;font-size:11px;}
 .btn-wide{width:100%;justify-content:center;}
 .btn:disabled{opacity:.35;cursor:not-allowed;transform:none!important;filter:none!important;}
-
-/* ── Main ── */
+.lang-btn{background:rgba(0,200,236,.1);border:1px solid var(--b2);color:var(--cyan);
+  border-radius:7px;padding:4px 10px;font-size:11px;font-weight:700;cursor:pointer;
+  letter-spacing:.5px;transition:all .18s;}
+.lang-btn:hover{background:rgba(0,200,236,.2);}
 main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:24px 14px 60px;}
-
-/* ── Calendar nav ── */
 .cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
 .cal-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;}
 .nav-btn{background:transparent;border:1px solid var(--b);color:var(--t2);
   border-radius:8px;padding:5px 14px;cursor:pointer;font-size:17px;transition:all .18s;}
 .nav-btn:hover{border-color:var(--b2);color:var(--t1);}
-
-/* ── Legend ── */
-.legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px;}
+.legend{display:flex;gap:14px;flex-wrap:wrap;}
 .leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t2);}
 .leg-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-
-/* ── Calendar grid ── */
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
 .dow{text-align:center;font-size:10px;font-weight:600;color:var(--t3);
   padding:5px 0;text-transform:uppercase;letter-spacing:.05em;}
-.dow:first-child{color:#f87171;}
-.dow:last-child{color:#60a5fa;}
-
+.dow:first-child{color:#f87171;}.dow:last-child{color:#60a5fa;}
 .day{background:var(--card2);border:1px solid var(--b);border-radius:9px;
-  padding:6px 5px;min-height:68px;cursor:pointer;transition:all .2s;
-  display:flex;flex-direction:column;}
+  padding:6px 5px;min-height:68px;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;}
 .day:hover{border-color:var(--b2);transform:translateY(-1px);}
 .day.empty{background:transparent;border-color:transparent;cursor:default;pointer-events:none;}
 .day.past{opacity:.45;}
@@ -75,10 +67,8 @@ main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:24px 14px
 .day.has-data{border-color:rgba(0,200,236,.22);}
 .day.has-ready{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.04);}
 .day.has-confirmed{border-color:rgba(0,200,236,.45);background:rgba(0,200,236,.05);}
-
 .dn{font-size:12px;font-weight:600;color:var(--t2);margin-bottom:3px;line-height:1;}
-.day.has-data .dn{color:var(--t1);}
-
+.day.has-data .dn,.day.has-ready .dn,.day.has-confirmed .dn{color:var(--t1);}
 .day-tags{display:flex;flex-direction:column;gap:2px;flex:1;}
 .dtag{font-size:9.5px;padding:1.5px 4px;border-radius:3px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5;}
@@ -86,55 +76,29 @@ main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:24px 14px
 .dtag-p{background:rgba(167,139,250,.14);color:var(--purple);}
 .dtag-ready{background:rgba(34,197,94,.15);color:var(--green);}
 .dtag-conf{background:rgba(0,200,236,.2);color:var(--cyan);}
-
-/* ── Modal ── */
 .overlay{position:fixed;inset:0;z-index:200;background:rgba(5,14,26,.9);
   backdrop-filter:blur(10px);display:flex;align-items:flex-end;justify-content:center;
   padding:0;opacity:0;pointer-events:none;transition:opacity .22s;}
 .overlay.on{opacity:1;pointer-events:all;}
 @media(min-width:540px){.overlay{align-items:center;padding:16px;}}
-.modal{background:var(--card2);border:1px solid var(--b2);
-  border-radius:20px 20px 0 0;padding:20px 18px 32px;
-  width:100%;max-width:460px;max-height:88vh;overflow-y:auto;
+.modal{background:var(--card2);border:1px solid var(--b2);border-radius:20px 20px 0 0;
+  padding:20px 18px 32px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto;
   transform:translateY(40px);transition:transform .25s cubic-bezier(.34,1.2,.64,1);}
 @media(min-width:540px){.modal{border-radius:20px;transform:translateY(14px);}}
 .overlay.on .modal{transform:translateY(0);}
-.modal-handle{width:36px;height:3px;background:var(--t3);border-radius:2px;
-  margin:0 auto 16px;display:block;}
+.modal-handle{width:36px;height:3px;background:var(--t3);border-radius:2px;margin:0 auto 16px;display:block;}
 @media(min-width:540px){.modal-handle{display:none;}}
-.modal-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;
-  color:var(--cyan);margin-bottom:3px;}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--cyan);margin-bottom:3px;}
 .modal-sub{font-size:12px;color:var(--t2);margin-bottom:16px;}
-
-/* ── Signup sections ── */
-.sec-head{font-size:11px;font-weight:600;color:var(--t3);
-  text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px;
-  display:flex;align-items:center;gap:6px;}
-.sec-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
-
-.slot-group{margin-bottom:14px;}
-.slot-row{display:flex;align-items:center;justify-content:space-between;
-  padding:7px 10px;background:rgba(0,0,0,.22);border:1px solid var(--b);
-  border-radius:8px;margin-bottom:4px;}
-.slot-label{font-size:12px;font-weight:500;}
-.slot-names{font-size:11px;color:var(--t2);margin-top:1px;}
-.slot-count{font-size:11px;padding:2px 7px;border-radius:20px;font-weight:600;flex-shrink:0;}
-.sc-ok{background:rgba(34,197,94,.15);color:var(--green);}
-.sc-no{background:rgba(58,95,120,.2);color:var(--t3);}
-.sc-conf{background:rgba(0,200,236,.15);color:var(--cyan);}
-
-/* ── Form ── */
 .fg{margin-bottom:12px;}
-.fl{display:block;font-size:11px;font-weight:600;color:var(--t2);
-  margin-bottom:5px;text-transform:uppercase;letter-spacing:.07em;}
-.fi{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--b);
-  border-radius:10px;padding:10px 13px;color:var(--t1);
-  font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .18s;}
+.fl{display:block;font-size:11px;font-weight:600;color:var(--t2);margin-bottom:5px;
+  text-transform:uppercase;letter-spacing:.07em;}
+.fi{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--b);border-radius:10px;
+  padding:10px 13px;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:14px;
+  outline:none;transition:border-color .18s;}
 .fi:focus{border-color:var(--cyan);}
 .fi::placeholder{color:var(--t3);}
 .fi-hint{font-size:11px;color:var(--t3);margin-top:4px;line-height:1.5;}
-
-/* ── Checkbox slots ── */
 .loc-block{margin-bottom:14px;}
 .loc-title{font-size:12px;font-weight:600;padding:5px 10px;border-radius:7px;
   margin-bottom:7px;display:inline-flex;align-items:center;gap:5px;}
@@ -147,15 +111,61 @@ main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:24px 14px
 .slot-check:hover{border-color:var(--b2);}
 .slot-check.sel-j{background:rgba(0,200,236,.1);border-color:rgba(0,200,236,.4);}
 .slot-check.sel-p{background:rgba(167,139,250,.1);border-color:rgba(167,139,250,.4);}
-.slot-check input{display:none;}
 .chk-box{width:14px;height:14px;border-radius:3px;border:1.5px solid var(--t3);
-  flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;font-size:10px;}
 .slot-check.sel-j .chk-box{background:var(--cyan);border-color:var(--cyan);color:#050e1a;}
-.slot-check.sel-p .chk-box{background:var(--purple);border-color:var(--purple);}
+.slot-check.sel-p .chk-box{background:var(--purple);border-color:var(--purple);color:#fff;}
 .chk-label{font-size:12px;line-height:1.3;}
 .chk-time{font-size:10px;color:var(--t3);margin-top:1px;}
-
-/* ── Toast ── */
+.adb-slot{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;
+  padding:10px 12px;border:1px solid var(--b);border-radius:9px;margin-bottom:6px;}
+.adb-slot.ready{border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.04);}
+.adb-slot.confirmed{border-color:rgba(0,200,236,.35);background:rgba(0,200,236,.04);}
+.adb-info{flex:1;min-width:0;}
+.adb-slot-name{font-size:12px;font-weight:500;}
+.person-row{display:flex;align-items:center;gap:6px;padding:5px 0;
+  border-bottom:1px solid rgba(255,255,255,.04);}
+.person-row:last-child{border-bottom:none;}
+.person-name{font-size:13px;font-weight:500;flex:1;}
+.person-contact{font-size:11px;color:var(--t3);}
+.person-actions{display:flex;gap:4px;flex-shrink:0;}
+.slot-count{font-size:11px;padding:2px 7px;border-radius:20px;font-weight:600;flex-shrink:0;}
+.sc-ok{background:rgba(34,197,94,.15);color:var(--green);}
+.sc-no{background:rgba(58,95,120,.2);color:var(--t3);}
+.sc-conf{background:rgba(0,200,236,.15);color:var(--cyan);}
+.conf-pill{font-size:11px;padding:2px 9px;border-radius:20px;
+  background:rgba(0,200,236,.12);color:var(--cyan);font-weight:600;}
+.admin-badge{background:rgba(245,158,11,.14);border:1px solid rgba(245,158,11,.28);
+  color:var(--amber);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;}
+.admin-day-block{background:var(--card2);border:1px solid var(--b);
+  border-radius:14px;padding:16px;margin-bottom:12px;}
+.adb-date{font-size:15px;font-weight:600;margin-bottom:12px;}
+.sec-head{font-size:11px;font-weight:600;color:var(--t3);text-transform:uppercase;
+  letter-spacing:.07em;margin-bottom:7px;display:flex;align-items:center;gap:6px;}
+.sec-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.slot-row{display:flex;align-items:center;justify-content:space-between;
+  padding:7px 10px;background:rgba(0,0,0,.22);border:1px solid var(--b);
+  border-radius:8px;margin-bottom:4px;}
+.help-step{display:flex;gap:12px;align-items:flex-start;
+  padding:12px 0;border-bottom:1px solid var(--b);}
+.help-step:last-child{border-bottom:none;}
+.help-num{width:26px;height:26px;border-radius:50%;background:var(--cyan);
+  color:#050e1a;font-size:12px;font-weight:700;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;}
+.help-text{font-size:13px;line-height:1.6;color:var(--t1);}
+.help-text b{color:var(--cyan);}
+.help-sub{font-size:11px;color:var(--t3);margin-top:3px;}
+.notice-modal{background:var(--card2);border:2px solid rgba(245,158,11,.4);
+  border-radius:20px;padding:24px 22px;width:100%;max-width:420px;
+  transform:translateY(14px);transition:transform .25s cubic-bezier(.34,1.2,.64,1);}
+.overlay.on .notice-modal{transform:translateY(0);}
+.notice-textarea{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--b);
+  border-radius:10px;padding:10px 13px;color:var(--t1);font-family:'DM Sans',sans-serif;
+  font-size:14px;outline:none;transition:border-color .18s;resize:vertical;
+  min-height:100px;line-height:1.6;}
+.notice-textarea:focus{border-color:var(--amber);}
+.edit-row{display:flex;gap:6px;margin-bottom:6px;}
+.edit-row .fi{font-size:13px;padding:7px 10px;}
 #toast{position:fixed;bottom:24px;left:50%;
   transform:translateX(-50%) translateY(70px);
   background:var(--card2);border:1px solid var(--b);border-radius:12px;
@@ -165,8 +175,6 @@ main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:24px 14px
 #toast.show{transform:translateX(-50%) translateY(0);}
 #toast.ok{color:var(--green);border-color:rgba(34,197,94,.3);}
 #toast.err{color:var(--red);border-color:rgba(239,68,68,.3);}
-
-/* ── Setup ── */
 .setup-wrap{max-width:460px;margin:50px auto;padding:0 14px;}
 .setup-logo{font-family:'Bebas Neue',sans-serif;font-size:50px;letter-spacing:5px;
   color:var(--cyan);text-shadow:0 0 36px rgba(0,200,236,.5);text-align:center;}
@@ -186,29 +194,9 @@ main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:24px 14px
 .codeblock{background:rgba(0,0,0,.5);border:1px solid var(--b);border-radius:10px;
   padding:11px;font-size:10px;font-family:monospace;color:var(--t2);
   white-space:pre;overflow-x:auto;line-height:1.65;max-height:200px;overflow-y:auto;}
-
-/* ── Admin ── */
-.admin-badge{background:rgba(245,158,11,.14);border:1px solid rgba(245,158,11,.28);
-  color:var(--amber);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;}
-.admin-day-block{background:var(--card2);border:1px solid var(--b);
-  border-radius:14px;padding:16px;margin-bottom:12px;}
-.adb-date{font-size:15px;font-weight:600;margin-bottom:12px;}
-.adb-slot{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
-  padding:10px 12px;border:1px solid var(--b);border-radius:9px;margin-bottom:6px;}
-.adb-slot.ready{border-color:rgba(34,197,94,.35);background:rgba(34,197,94,.04);}
-.adb-slot.confirmed{border-color:rgba(0,200,236,.35);background:rgba(0,200,236,.04);}
-.adb-info{flex:1;}
-.adb-slot-name{font-size:13px;font-weight:500;}
-.adb-people{font-size:12px;color:var(--t2);margin-top:3px;}
-.adb-actions{display:flex;gap:6px;align-items:center;}
-.conf-pill{font-size:11px;padding:2px 9px;border-radius:20px;
-  background:rgba(0,200,236,.12);color:var(--cyan);font-weight:600;}
-
 @media(max-width:480px){
-  .cal-grid{gap:2px;}
-  .day{min-height:58px;padding:5px 4px;}
-  .dn{font-size:11px;}
-  .slot-checks{grid-template-columns:1fr;}
+  .cal-grid{gap:2px;}.day{min-height:58px;padding:5px 4px;}.dn{font-size:11px;}
+  .slot-checks{grid-template-columns:1fr;}.hbtns{gap:4px;}
 }
 </style>
 </head>
@@ -216,41 +204,164 @@ main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:24px 14px
 <div id="app"></div>
 <div id="toast"></div>
 <script>
-/* ════════════════════════════════════════
-   장소 & 시간대 설정
-════════════════════════════════════════ */
+/* ══ TRANSLATIONS ══════════════════════════════════════════════ */
+const TRANS = {
+  ko: {
+    sub:'강습 예약', howTo:'❓ 사용 방법', adminMode:'관리자 모드',
+    exitAdmin:'← 일반 보기', adminBadge:'관리자',
+    hasSignups:'신청 있음', twoPlus:'2명 이상', confirmed:'강습 확정',
+    noticeBtn:'📢 공지', allSignups:'전체 신청 현황',
+    detailSub:'신청 현황이에요', cancelHint:'이름 클릭 → 본인 신청 취소',
+    noOne:'아직 신청한 사람이 없어요', signUpBtn:'🤿 나도 신청하기', close:'닫기',
+    signupTitle:'참여 희망 신청', selectAll:'가능한 시간 모두 선택하세요',
+    nameLbl:'이름', contactLbl:'연락처 (선택)', pwLbl:'비밀번호',
+    namePh:'홍길동', contactPh:'010-0000-0000',
+    pwPh:'나중에 취소할 때 필요해요',
+    pwHint:'⚠ 신청 취소 시 필요합니다. 꼭 기억하세요!',
+    back:'← 뒤로', submit:'신청하기 →',
+    delTitle:'신청 취소', pwConfirmLbl:'비밀번호 확인',
+    pwDelPh:'신청 시 입력한 비밀번호', cancel:'취소', delOk:'취소 확인',
+    confLabel:'✓ 확정',
+    adminAllTitle:'전체 신청 현황',
+    adminAllSub: n=>`${n}건 신청 · 2명 이상이면 강습 확정 가능`,
+    canOpen:'● 개설 가능', confBtn:'강습 확정', unconfBtn:'확정 취소',
+    editBtn:'수정', delBtn:'삭제', saveBtn:'저장',
+    noSignups:'아직 신청이 없어요', thisMonthNo:'이번 달 신청이 없어요',
+    helpTitle:'사용 방법 안내', helpSub:'프리다이빙 강습 예약 시스템',
+    h1t:'날짜 선택', h1d:'달력에서 원하는 날짜를 탭하세요',
+    h1s:'초록색 = 2명 이상 신청  ·  파란색 = 강습 확정',
+    h2t:'장소 & 시간 선택', h2d:'잠실 풀장 또는 파라다이브에서 가능한 시간대를 모두 체크하세요',
+    h2s:'여러 시간대 중복 선택 가능',
+    h3t:'정보 입력', h3d:'이름 · 연락처(선택) · 비밀번호 입력 후 신청',
+    h3s:'⚠ 비밀번호는 신청 취소 시 필요해요. 꼭 기억하세요!',
+    h4t:'신청 취소', h4d:'날짜 클릭 → 본인 이름 클릭 → 비밀번호 입력',
+    h4s:'',
+    h5t:'강습 확정 안내', h5d:'2명 이상 신청 시 강사가 확인 후 확정 연락드려요',
+    h5s:'달력에서 파란색으로 표시되면 강습 확정',
+    locInfo:'🏊 잠실 풀장 — 평일: 1부 10:00 / 2부 14:00 / 3부 18:00 · 주말: 1부 10:00 / 2부 14:00\n🌊 파라다이브 — 1부 08~11시 / 2부 11~14시 / 3부 14~17시 / 4부 17~20시 / 5부 20~23시',
+    noticeTitle:'공지사항', noticeOk:'확인했어요',
+    noticeMgrTitle:'공지 관리', noticeMgrSub:'앱 접속 시 팝업으로 표시됩니다',
+    noticeTextLbl:'공지 내용',
+    noticeOffBtn:'공지 끄기', noticeSaveBtn:'📢 공지 등록',
+    adminEditTitle:'신청 수정 (관리자)',
+    adminDelConfirm:'이 신청을 삭제할까요?',
+    days:['일','월','화','수','목','금','토'],
+    months:['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'],
+    jamsilName:'잠실 풀장', jamsilShort:'잠실',
+    paradiveName:'파라다이브', paradiveShort:'파라',
+    s1:'1부', s2:'2부', s3:'3부', s4:'4부', s5:'5부',
+    wkSlots:['오전 10:00','오후 14:00','오후 18:00'],
+    weSlots:['오전 10:00','오후 14:00'],
+    pdSlots:['08:00~11:00','11:00~14:00','14:00~17:00','17:00~20:00','20:00~23:00'],
+    t_signup:'신청 완료! 🤿', t_cancel:'취소됐어요', t_conf:'강습 확정 ✓',
+    t_unconf:'확정 취소', t_noticeSaved:'공지 등록됐어요 📢', t_noticeOff:'공지 비활성화',
+    t_deleted:'삭제됐어요', t_saved:'저장됐어요',
+    v_name:'이름을 입력해주세요', v_pw:'비밀번호를 입력해주세요',
+    v_slot:'시간대를 하나 이상 선택해주세요', v_wrongPw:'비밀번호가 틀렸어요 ❌',
+    v_notice:'공지 내용을 입력해주세요', v_adminKey:'관리자 키가 필요합니다',
+    setupTitle:'Supabase 연결', sqlGuide:'SQL 가이드',
+    s_step1:'Supabase 준비', s_step1d:'가입 후 프로젝트 생성 → SQL 가이드 탭의 SQL 실행',
+    s_step2:'API 키 입력', s_step2d:'Settings → API Keys → Legacy anon, service_role API keys 탭',
+    s_urlLbl:'Project URL', s_anonLbl:'Anon Key (eyJ...)',
+    s_svcLbl:'Service Role Key (관리자용)',
+    s_connect:'연결하기 →', s_sqlDesc:'Supabase → SQL Editor → New query → Run 클릭',
+    s_copySql:'📋 SQL 복사',
+    adminPrompt:'서비스 롤 키를 입력하세요\n(Settings → API Keys → Legacy → service_role)',
+    resetConfirm:'설정 초기화할까요?',
+  },
+  en: {
+    sub:'Lesson Booking', howTo:'❓ How to Use', adminMode:'Admin',
+    exitAdmin:'← Exit Admin', adminBadge:'Admin',
+    hasSignups:'Signups', twoPlus:'2+ people', confirmed:'Confirmed',
+    noticeBtn:'📢 Notice', allSignups:'All Signups',
+    detailSub:'Current signups', cancelHint:'Click your name to cancel',
+    noOne:'No signups yet', signUpBtn:'🤿 Sign Me Up', close:'Close',
+    signupTitle:'Sign Up', selectAll:'Select all available times',
+    nameLbl:'Name', contactLbl:'Contact (optional)', pwLbl:'Password',
+    namePh:'Your name', contactPh:'Phone number',
+    pwPh:'Needed to cancel later',
+    pwHint:'⚠ You need this to cancel your signup. Please remember it!',
+    back:'← Back', submit:'Sign Up →',
+    delTitle:'Cancel Signup', pwConfirmLbl:'Password',
+    pwDelPh:'Enter your password', cancel:'Cancel', delOk:'Confirm Cancel',
+    confLabel:'✓ Confirmed',
+    adminAllTitle:'All Signups',
+    adminAllSub: n=>`${n} signups · Confirm classes with 2+ people`,
+    canOpen:'● Available', confBtn:'Confirm', unconfBtn:'Unconfirm',
+    editBtn:'Edit', delBtn:'Delete', saveBtn:'Save',
+    noSignups:'No signups yet', thisMonthNo:'No signups this month',
+    helpTitle:'How to Use', helpSub:'Freediving Lesson Booking',
+    h1t:'Select a Date', h1d:'Tap any date on the calendar',
+    h1s:'Green = 2+ signups  ·  Blue = Lesson confirmed',
+    h2t:'Choose Location & Time', h2d:'Check all times you are available at Jamsil Pool or Paradive',
+    h2s:'You can select multiple time slots',
+    h3t:'Enter Your Info', h3d:'Enter name, contact (optional), and a password, then submit',
+    h3s:'⚠ You need your password to cancel. Please remember it!',
+    h4t:'Cancel a Signup', h4d:'Click the date → Click your name → Enter password',
+    h4s:'',
+    h5t:'Lesson Confirmation', h5d:'When 2+ people sign up, the instructor will confirm and notify you',
+    h5s:'Blue on the calendar means the lesson is confirmed',
+    locInfo:'🏊 Jamsil Pool — Weekday: Sess.1 10:00 / Sess.2 14:00 / Sess.3 18:00 · Weekend: Sess.1 10:00 / Sess.2 14:00\n🌊 Paradive — Sess.1 08~11 / Sess.2 11~14 / Sess.3 14~17 / Sess.4 17~20 / Sess.5 20~23',
+    noticeTitle:'Notice', noticeOk:'Got it',
+    noticeMgrTitle:'Manage Notice', noticeMgrSub:'Shown as popup when users open the app',
+    noticeTextLbl:'Notice Content',
+    noticeOffBtn:'Disable Notice', noticeSaveBtn:'📢 Post Notice',
+    adminEditTitle:'Edit Signup (Admin)',
+    adminDelConfirm:'Delete this signup?',
+    days:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+    months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    jamsilName:'Jamsil Pool', jamsilShort:'Jamsil',
+    paradiveName:'Paradive', paradiveShort:'Para',
+    s1:'Sess.1', s2:'Sess.2', s3:'Sess.3', s4:'Sess.4', s5:'Sess.5',
+    wkSlots:['10:00 AM','2:00 PM','6:00 PM'],
+    weSlots:['10:00 AM','2:00 PM'],
+    pdSlots:['08:00~11:00','11:00~14:00','14:00~17:00','17:00~20:00','20:00~23:00'],
+    t_signup:'Signed up! 🤿', t_cancel:'Cancelled', t_conf:'Lesson confirmed ✓',
+    t_unconf:'Confirmation removed', t_noticeSaved:'Notice posted 📢', t_noticeOff:'Notice disabled',
+    t_deleted:'Deleted', t_saved:'Saved',
+    v_name:'Please enter your name', v_pw:'Please enter a password',
+    v_slot:'Please select at least one time slot', v_wrongPw:'Wrong password ❌',
+    v_notice:'Please enter notice content', v_adminKey:'Admin key required',
+    setupTitle:'Connect Supabase', sqlGuide:'SQL Guide',
+    s_step1:'Prepare Supabase', s_step1d:'Sign up, create a project, then run the SQL in the SQL Guide tab',
+    s_step2:'Enter API Keys', s_step2d:'Settings → API Keys → Legacy anon, service_role API keys tab',
+    s_urlLbl:'Project URL', s_anonLbl:'Anon Key (eyJ...)',
+    s_svcLbl:'Service Role Key (admin)',
+    s_connect:'Connect →', s_sqlDesc:'Supabase → SQL Editor → New query → paste → Run',
+    s_copySql:'📋 Copy SQL',
+    adminPrompt:'Enter Service Role Key\n(Settings → API Keys → Legacy → service_role)',
+    resetConfirm:'Reset all settings?',
+  }
+};
+
+/* ══ LOC CONFIG ════════════════════════════════════════════════ */
 const LOC = {
   jamsil: {
-    key:'jamsil', name:'잠실 풀장', short:'잠실', cls:'lt-j', tagCls:'dtag-j',
-    selCls:'sel-j', color:'var(--cyan)',
-    slots(dateStr){
-      const dow = new Date(dateStr+'T12:00:00').getDay();
-      const weekend = dow===0||dow===6;
-      return weekend
-        ? [{id:'1부',time:'오전 10:00'},{id:'2부',time:'오후 14:00'}]
-        : [{id:'1부',time:'오전 10:00'},{id:'2부',time:'오후 14:00'},{id:'3부',time:'오후 18:00'}];
+    key:'jamsil', cls:'lt-j', tagCls:'dtag-j', selCls:'sel-j', color:'var(--cyan)',
+    get name(){return T.jamsilName;}, get short(){return T.jamsilShort;},
+    slots(ds){
+      const dow=new Date(ds+'T12:00:00').getDay();
+      const we=dow===0||dow===6;
+      const ids=[T.s1,T.s2,T.s3];
+      const times=we?T.weSlots:T.wkSlots;
+      return times.map((t,i)=>({id:ids[i],time:t}));
     }
   },
   paradive: {
-    key:'paradive', name:'파라다이브', short:'파라', cls:'lt-p', tagCls:'dtag-p',
-    selCls:'sel-p', color:'var(--purple)',
+    key:'paradive', cls:'lt-p', tagCls:'dtag-p', selCls:'sel-p', color:'var(--purple)',
+    get name(){return T.paradiveName;}, get short(){return T.paradiveShort;},
     slots(){
-      return [
-        {id:'1부',time:'08:00~11:00'},{id:'2부',time:'11:00~14:00'},
-        {id:'3부',time:'14:00~17:00'},{id:'4부',time:'17:00~20:00'},{id:'5부',time:'20:00~23:00'}
-      ];
+      return T.pdSlots.map((t,i)=>({id:[T.s1,T.s2,T.s3,T.s4,T.s5][i],time:t}));
     }
   }
 };
 
-/* ════════════════════════════════════════
-   SQL 설정
-════════════════════════════════════════ */
-const SQL = `-- 기존 테이블 제거
+/* ══ SQL ═══════════════════════════════════════════════════════ */
+const SQL=`-- Drop existing tables
 drop table if exists confirmed_lessons;
 drop table if exists availability;
 
--- 참여 희망 테이블
+-- Availability table
 create table availability (
   id          uuid default gen_random_uuid() primary key,
   wish_date   date not null,
@@ -263,7 +374,7 @@ create table availability (
   unique(wish_date, location, time_slot, name)
 );
 
--- 확정 강습 테이블
+-- Confirmed lessons table
 create table confirmed_lessons (
   id          uuid default gen_random_uuid() primary key,
   lesson_date date not null,
@@ -274,441 +385,481 @@ create table confirmed_lessons (
   unique(lesson_date, location, time_slot)
 );
 
--- 보안 설정
-alter table availability       enable row level security;
-alter table confirmed_lessons  enable row level security;
+-- Notice table
+create table if not exists notice (
+  id         int primary key default 1,
+  content    text not null default '',
+  active     boolean not null default false,
+  updated_at timestamptz default now()
+);
+insert into notice (id,content,active) values (1,'',false) on conflict do nothing;
 
-create policy "읽기_av"   on availability      for select using (true);
-create policy "쓰기_av"   on availability      for insert with check (true);
-create policy "삭제_av"   on availability      for delete using (true);
-create policy "읽기_cl"   on confirmed_lessons for select using (true);`;
+-- RLS
+alter table availability      enable row level security;
+alter table confirmed_lessons enable row level security;
+alter table notice            enable row level security;
 
-/* ════════════════════════════════════════
-   STATE
-════════════════════════════════════════ */
+create policy "r_av"  on availability      for select using (true);
+create policy "w_av"  on availability      for insert with check (true);
+create policy "d_av"  on availability      for delete using (true);
+create policy "u_av"  on availability      for update using (true);
+create policy "r_cl"  on confirmed_lessons for select using (true);
+create policy "r_no"  on notice            for select using (true);`;
+
+/* ══ STATE ═════════════════════════════════════════════════════ */
 let sb=null, sbAdmin=null;
+let curLang = ls('fd_lang')||'ko';
+let T = TRANS[curLang];
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   ▼▼▼ 여기에 Supabase 키를 넣으세요 ▼▼▼
-   url    : Supabase 프로젝트 URL
-   anonKey: Settings → API Keys → Legacy 탭 → anon key (eyJ...로 시작)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const PRESET = {
-  url:     'https://azbkjduhazribkutpttz.supabase.co',
-  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6YmtqZHVoYXpyaWJrdXRwdHR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MjQ5NTAsImV4cCI6MjA5NjUwMDk1MH0.iRgtBg5Bhyf3VoltueO4D7TKoSpedCDeeqVgxMZBdMY'   // ← 여기에 anon key 붙여넣기
+  url:     '',   // ← Supabase Project URL
+  anonKey: ''    // ← anon key (eyJ...)
 };
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
-let cfg = lsJ('fd_cfg') || (PRESET.anonKey ? PRESET : null);
-let admK = ls('fd_adm') || '';
-let curYear = new Date().getFullYear();
-let curMonth = new Date().getMonth();
-let monthData = { av:[], confirmed:[] };
-let S = { view:'main', modal:null, selDate:null, selAv:null };
+let cfg = lsJ('fd_cfg')||(PRESET.anonKey?PRESET:null);
+let admK = ls('fd_adm')||'';
+let curYear=new Date().getFullYear(), curMonth=new Date().getMonth();
+let monthData={av:[],confirmed:[]};
+let activeNotice=null;
+let S={view:'main',modal:null,selDate:null,selAv:null,editId:null};
 
-/* ════════════════════════════════════════
-   UTILS
-════════════════════════════════════════ */
+/* ══ UTILS ═════════════════════════════════════════════════════ */
 function ls(k,v){if(v!==undefined){localStorage.setItem(k,v);return v;}return localStorage.getItem(k);}
 function lsJ(k,v){if(v!==undefined){localStorage.setItem(k,JSON.stringify(v));return v;}try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}
 function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function toast(m,t='ok'){const e=document.getElementById('toast');e.textContent=m;e.className='show '+t;setTimeout(()=>e.className='',2800);}
-const DOW=['일','월','화','수','목','금','토'];
-const MON=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 function dStr(y,m,d){return`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;}
 function todayStr(){return new Date().toISOString().split('T')[0];}
-function fmtDate(ds){const d=new Date(ds+'T12:00:00');return`${d.getMonth()+1}월 ${d.getDate()}일 (${DOW[d.getDay()]})`;}
-
-// Build lookup: date → location → slot → [{name, id, contact}]
+function fmtDate(ds){const d=new Date(ds+'T12:00:00');return`${T.months[d.getMonth()]} ${d.getDate()} (${T.days[d.getDay()]})`;}
 function buildMap(){
-  const map={};
-  monthData.av.forEach(r=>{
-    if(!map[r.wish_date])map[r.wish_date]={};
-    if(!map[r.wish_date][r.location])map[r.wish_date][r.location]={};
-    if(!map[r.wish_date][r.location][r.time_slot])map[r.wish_date][r.location][r.time_slot]=[];
-    map[r.wish_date][r.location][r.time_slot].push({id:r.id,name:r.name,contact:r.contact,password:r.password});
-  });
-  return map;
-}
-function buildConfMap(){
   const m={};
-  monthData.confirmed.forEach(r=>{
-    const k=`${r.lesson_date}|${r.location}|${r.time_slot}`;
-    m[k]=true;
+  monthData.av.forEach(r=>{
+    if(!m[r.wish_date])m[r.wish_date]={};
+    if(!m[r.wish_date][r.location])m[r.wish_date][r.location]={};
+    if(!m[r.wish_date][r.location][r.time_slot])m[r.wish_date][r.location][r.time_slot]=[];
+    m[r.wish_date][r.location][r.time_slot].push({id:r.id,name:r.name,contact:r.contact,password:r.password});
   });
   return m;
 }
+function buildConfMap(){
+  const m={};
+  monthData.confirmed.forEach(r=>{m[`${r.lesson_date}|${r.location}|${r.time_slot}`]=true;});
+  return m;
+}
 
-/* ════════════════════════════════════════
-   SUPABASE
-════════════════════════════════════════ */
+/* ══ SUPABASE ══════════════════════════════════════════════════ */
 function initSB(){
   if(!cfg)return;
   sb=supabase.createClient(cfg.url,cfg.anonKey);
   if(admK)sbAdmin=supabase.createClient(cfg.url,admK);
 }
-
 async function loadMonth(){
   if(!sb){render();return;}
   const from=dStr(curYear,curMonth,1);
   const to=dStr(curMonth===11?curYear+1:curYear,curMonth===11?0:curMonth+1,1);
-  const [r1,r2]=await Promise.all([
+  const[r1,r2]=await Promise.all([
     sb.from('availability').select('*').gte('wish_date',from).lt('wish_date',to),
     sb.from('confirmed_lessons').select('*').gte('lesson_date',from).lt('lesson_date',to)
   ]);
   if(r1.error){
-    if(r1.error.code==='42P01')toast('⚠ Supabase SQL을 먼저 실행해주세요!','err');
-    else toast('로드 실패','err');
+    if(r1.error.code==='42P01')toast('⚠ Run SQL in Supabase first!','err');
+    else toast('Load failed','err');
     monthData={av:[],confirmed:[]};render();return;
   }
-  monthData={av:r1.data||[],confirmed:r2.data||[]};
-  render();
+  monthData={av:r1.data||[],confirmed:r2.data||[]};render();
 }
-
+async function loadNotice(){
+  if(!sb)return;
+  const{data}=await sb.from('notice').select('*').eq('id',1).single();
+  activeNotice=(data&&data.active&&data.content)?data:null;
+  if(activeNotice&&!sessionStorage.getItem('nd_'+activeNotice.updated_at)){
+    S.modal='notice';render();
+  }
+}
 async function apiSignup(date,slots,name,contact,pw){
-  // slots = [{location:'jamsil',slot:'1부'}, ...]
   const rows=slots.map(s=>({wish_date:date,location:s.loc,time_slot:s.slot,name,contact:contact||null,password:pw}));
   const{error}=await sb.from('availability').upsert(rows,{onConflict:'wish_date,location,time_slot,name',ignoreDuplicates:true});
-  if(error){toast('신청 실패: '+error.message,'err');return false;}
-  toast('신청 완료! 🤿');return true;
+  if(error){toast(T.v_name+': '+error.message,'err');return false;}
+  toast(T.t_signup);return true;
 }
-
 async function apiDelete(id,enteredPw){
-  // Find in local data to check pw
   const row=monthData.av.find(r=>r.id===id);
-  if(!row){toast('데이터를 찾을 수 없어요','err');return false;}
-  if(row.password!==enteredPw){toast('비밀번호가 틀렸어요 ❌','err');return false;}
+  if(!row){toast('Not found','err');return false;}
+  if(row.password!==enteredPw){toast(T.v_wrongPw,'err');return false;}
   const{error}=await sb.from('availability').delete().eq('id',id);
-  if(error){toast('삭제 실패','err');return false;}
-  toast('취소됐어요');return true;
+  if(error){toast('Delete failed','err');return false;}
+  toast(T.t_cancel);return true;
 }
-
+async function apiAdminDelete(id){
+  if(!sbAdmin){toast(T.v_adminKey,'err');return false;}
+  const{error}=await sbAdmin.from('availability').delete().eq('id',id);
+  if(error){toast('Delete failed','err');return false;}
+  toast(T.t_deleted);return true;
+}
+async function apiAdminEdit(id,name,contact){
+  if(!sbAdmin){toast(T.v_adminKey,'err');return false;}
+  const{error}=await sbAdmin.from('availability').update({name,contact:contact||null}).eq('id',id);
+  if(error){toast('Update failed','err');return false;}
+  toast(T.t_saved);return true;
+}
 async function apiConfirm(date,loc,slot){
-  if(!sbAdmin){toast('관리자 키 필요','err');return;}
+  if(!sbAdmin){toast(T.v_adminKey,'err');return;}
   const{error}=await sbAdmin.from('confirmed_lessons')
     .upsert({lesson_date:date,location:loc,time_slot:slot},{onConflict:'lesson_date,location,time_slot',ignoreDuplicates:true});
-  if(error){toast('확정 실패: '+error.message,'err');return;}
-  toast('강습 확정됐어요 ✓');await loadMonth();
+  if(error){toast('Confirm failed','err');return;}
+  toast(T.t_conf);await loadMonth();
 }
-
 async function apiUnconfirm(date,loc,slot){
-  if(!sbAdmin){toast('관리자 키 필요','err');return;}
-  await sbAdmin.from('confirmed_lessons')
-    .delete().eq('lesson_date',date).eq('location',loc).eq('time_slot',slot);
-  toast('확정 취소됐어요');await loadMonth();
+  if(!sbAdmin){toast(T.v_adminKey,'err');return;}
+  await sbAdmin.from('confirmed_lessons').delete().eq('lesson_date',date).eq('location',loc).eq('time_slot',slot);
+  toast(T.t_unconf);await loadMonth();
+}
+async function apiSetNotice(content,active){
+  if(!sbAdmin){toast(T.v_adminKey,'err');return false;}
+  const{error}=await sbAdmin.from('notice').upsert({id:1,content,active,updated_at:new Date().toISOString()});
+  if(error){toast('Notice save failed','err');return false;}
+  toast(active?T.t_noticeSaved:T.t_noticeOff);await loadNotice();return true;
 }
 
-/* ════════════════════════════════════════
-   RENDER — SETUP
-════════════════════════════════════════ */
+/* ══ RENDER ════════════════════════════════════════════════════ */
 function rSetup(){return`
 <div class="setup-wrap">
   <div class="setup-logo">FREEDIVE</div>
-  <div class="setup-tag">강습 예약 시스템</div>
+  <div class="setup-tag">${T.sub}</div>
   <div class="setup-card">
     <div class="tabs">
-      <button class="tabn on" data-tab="conn">Supabase 연결</button>
-      <button class="tabn" data-tab="sql">SQL 가이드</button>
+      <button class="tabn on" data-tab="conn">${T.setupTitle}</button>
+      <button class="tabn" data-tab="sql">${T.sqlGuide}</button>
     </div>
     <div id="tp-conn">
-      <div class="step-h"><span class="step-n">1</span>Supabase 준비</div>
-      <div class="step-d"><a href="https://supabase.com" target="_blank" style="color:var(--cyan)">supabase.com</a> 가입 후 프로젝트 생성 → SQL 가이드 탭의 SQL 실행</div>
-      <div class="step-h"><span class="step-n">2</span>API 키 입력</div>
-      <div class="step-d">Settings → API Keys → <b>Legacy anon, service_role API keys</b> 탭</div>
-      <div class="fg"><label class="fl">Project URL</label><input class="fi" id="inp-url" placeholder="https://xxxx.supabase.co"/></div>
-      <div class="fg"><label class="fl">Anon Key (eyJ...)</label><input class="fi" id="inp-anon" placeholder="eyJhbGci..."/></div>
-      <div class="fg"><label class="fl">Service Role Key (관리자용)</label><input class="fi" id="inp-svc" placeholder="eyJhbGci..."/></div>
-      <button class="btn btn-primary btn-wide" id="btn-conn">연결하기 →</button>
+      <div class="step-h"><span class="step-n">1</span>${T.s_step1}</div>
+      <div class="step-d"><a href="https://supabase.com" target="_blank" style="color:var(--cyan)">supabase.com</a> — ${T.s_step1d}</div>
+      <div class="step-h"><span class="step-n">2</span>${T.s_step2}</div>
+      <div class="step-d">${T.s_step2d}</div>
+      <div class="fg"><label class="fl">${T.s_urlLbl}</label><input class="fi" id="inp-url" placeholder="https://xxxx.supabase.co"/></div>
+      <div class="fg"><label class="fl">${T.s_anonLbl}</label><input class="fi" id="inp-anon" placeholder="eyJhbGci..."/></div>
+      <div class="fg"><label class="fl">${T.s_svcLbl}</label><input class="fi" id="inp-svc" placeholder="eyJhbGci..."/></div>
+      <button class="btn btn-primary btn-wide" id="btn-conn">${T.s_connect}</button>
     </div>
     <div id="tp-sql" style="display:none">
-      <div class="step-d">아래 SQL을 Supabase → SQL Editor → New query에 붙여넣고 Run 클릭</div>
+      <div class="step-d">${T.s_sqlDesc}</div>
       <div class="codeblock">${esc(SQL)}</div>
-      <button class="btn btn-ghost btn-sm" style="margin-top:10px" id="btn-copy-sql">📋 SQL 복사</button>
+      <button class="btn btn-ghost btn-sm" style="margin-top:10px" id="btn-copy-sql">${T.s_copySql}</button>
     </div>
   </div>
 </div>`;}
 
-/* ════════════════════════════════════════
-   RENDER — HEADER
-════════════════════════════════════════ */
 function rHeader(admin=false){return`
 <header>
-  <div class="logo">FREEDIVE<small>강습 예약</small></div>
-  <div style="display:flex;gap:7px;align-items:center">
+  <div class="logo">FREEDIVE<small>${T.sub}</small></div>
+  <div class="hbtns">
+    <button class="lang-btn" id="btn-lang">${curLang==='ko'?'EN':'한국어'}</button>
+    <button class="btn btn-ghost btn-sm" id="btn-help">${T.howTo}</button>
     ${admin
-      ?`<span class="admin-badge">관리자</span>
-        <button class="btn btn-ghost btn-sm" id="btn-exit">← 일반 보기</button>`
-      :`<button class="btn btn-ghost btn-sm" id="btn-admin">관리자 모드</button>
-        <button class="btn btn-ghost btn-sm" id="btn-reset" title="재설정">⚙</button>`}
+      ?`<span class="admin-badge">${T.adminBadge}</span>
+        <button class="btn btn-ghost btn-sm" id="btn-notice-mgr">${T.noticeBtn}</button>
+        <button class="btn btn-ghost btn-sm" id="btn-view-all">${T.allSignups}</button>
+        <button class="btn btn-ghost btn-sm" id="btn-exit">${T.exitAdmin}</button>`
+      :`<button class="btn btn-ghost btn-sm" id="btn-admin">${T.adminMode}</button>
+        <button class="btn btn-ghost btn-sm" id="btn-reset">⚙</button>`}
   </div>
 </header>`;}
 
-/* ════════════════════════════════════════
-   RENDER — CALENDAR
-════════════════════════════════════════ */
 function rCalendar(){
-  const avMap=buildMap();
-  const confMap=buildConfMap();
+  const avMap=buildMap(), confMap=buildConfMap();
   const today=todayStr();
   const firstDow=new Date(curYear,curMonth,1).getDay();
   const daysInMonth=new Date(curYear,curMonth+1,0).getDate();
-
   let cells='';
-  DOW.forEach(d=>{cells+=`<div class="dow">${d}</div>`;});
+  T.days.forEach(d=>{cells+=`<div class="dow">${d}</div>`;});
   for(let i=0;i<firstDow;i++)cells+=`<div class="day empty"></div>`;
-
   for(let d=1;d<=daysInMonth;d++){
     const ds=dStr(curYear,curMonth,d);
     const dayAv=avMap[ds]||{};
-    const isToday=ds===today;
-    const isPast=ds<today;
-
-    // compute tags
     let hasData=false,hasReady=false,hasConf=false;
     let tags='<div class="day-tags">';
-
-    for(const [locKey,loc] of Object.entries(LOC)){
+    for(const[locKey,loc]of Object.entries(LOC)){
       const locAv=dayAv[locKey]||{};
       const slots=Object.keys(locAv);
-      if(slots.length===0)continue;
+      if(!slots.length)continue;
       hasData=true;
-      let maxCount=0,anyConf=false;
+      let maxCnt=0,anyConf=false;
       slots.forEach(sl=>{
         const cnt=locAv[sl].length;
-        if(cnt>maxCount)maxCount=cnt;
+        if(cnt>maxCnt)maxCnt=cnt;
         if(confMap[`${ds}|${locKey}|${sl}`])anyConf=true;
       });
-      if(anyConf){hasConf=true;}
-      if(maxCount>=2){hasReady=true;}
-      const totalPeople=new Set(slots.flatMap(sl=>locAv[sl].map(x=>x.name))).size;
+      if(anyConf)hasConf=true;
+      if(maxCnt>=2)hasReady=true;
+      const uniq=new Set(slots.flatMap(sl=>locAv[sl].map(x=>x.name))).size;
       let tc=loc.tagCls;
-      if(anyConf)tc='dtag-conf';
-      else if(maxCount>=2)tc='dtag-ready';
-      tags+=`<div class="dtag ${tc}">${loc.short} ${totalPeople}명</div>`;
+      if(anyConf)tc='dtag-conf';else if(maxCnt>=2)tc='dtag-ready';
+      tags+=`<div class="dtag ${tc}">${loc.short} ${uniq}</div>`;
     }
     tags+='</div>';
-
     let cls='day';
-    if(hasConf)cls+=' has-confirmed';
-    else if(hasReady)cls+=' has-ready';
-    else if(hasData)cls+=' has-data';
-    if(isToday)cls+=' today';
-    if(isPast)cls+=' past';
-
+    if(hasConf)cls+=' has-confirmed';else if(hasReady)cls+=' has-ready';else if(hasData)cls+=' has-data';
+    if(ds===today)cls+=' today';
+    if(ds<today)cls+=' past';
     cells+=`<div class="${cls}" data-date="${ds}"><div class="dn">${d}</div>${tags}</div>`;
   }
-
-  const adminAddBtn=S.view==='admin'
-    ?`<button class="btn btn-primary btn-sm" style="margin-left:auto" id="btn-view-all">전체 신청 현황</button>`:'';
-
   return`
 ${rHeader(S.view==='admin')}
 <main>
   <div class="cal-nav">
     <button class="nav-btn" id="btn-prev">‹</button>
-    <div class="cal-title">${curYear}년 ${MON[curMonth]}</div>
+    <div class="cal-title">${curYear} · ${T.months[curMonth]}</div>
     <button class="nav-btn" id="btn-next">›</button>
   </div>
   <div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px">
     <div class="legend">
-      <div class="leg"><div class="leg-dot" style="background:var(--t3)"></div>신청 있음</div>
-      <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>2명 이상</div>
-      <div class="leg"><div class="leg-dot" style="background:var(--cyan)"></div>강습 확정</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--t3)"></div>${T.hasSignups}</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>${T.twoPlus}</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--cyan)"></div>${T.confirmed}</div>
     </div>
-    ${adminAddBtn}
   </div>
   <div class="cal-grid">${cells}</div>
 </main>
 ${rModal()}`;}
 
-/* ════════════════════════════════════════
-   RENDER — MODAL
-════════════════════════════════════════ */
 function rModal(){
   if(!S.modal)return'';
 
+  /* ── Notice ── */
+  if(S.modal==='notice'&&activeNotice){
+    return`<div class="overlay on" id="ov"><div class="notice-modal">
+      <div style="font-size:28px;text-align:center;margin-bottom:8px">📢</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;
+        color:var(--amber);text-align:center;margin-bottom:12px">${T.noticeTitle}</div>
+      <div style="font-size:14px;line-height:1.75;color:var(--t1);background:rgba(0,0,0,.25);
+        border-radius:10px;padding:14px;margin-bottom:16px;white-space:pre-wrap;word-break:break-word">
+        ${esc(activeNotice.content)}</div>
+      <button class="btn btn-primary btn-wide" id="btn-notice-ok">${T.noticeOk}</button>
+    </div></div>`;}
+
+  /* ── Help ── */
+  if(S.modal==='help'){
+    const steps=[[T.h1t,T.h1d,T.h1s],[T.h2t,T.h2d,T.h2s],[T.h3t,T.h3d,T.h3s],[T.h4t,T.h4d,T.h4s],[T.h5t,T.h5d,T.h5s]];
+    return`<div class="overlay on" id="ov"><div class="modal">
+      <div class="modal-handle"></div>
+      <div class="modal-title">${T.helpTitle}</div>
+      <div class="modal-sub" style="margin-bottom:16px">${T.helpSub}</div>
+      ${steps.map((s,i)=>`<div class="help-step">
+        <div class="help-num">${i+1}</div>
+        <div class="help-text"><b>${s[0]}</b><br>${s[1]}${s[2]?`<div class="help-sub">${s[2]}</div>`:''}</div>
+      </div>`).join('')}
+      <div style="background:rgba(0,200,236,.07);border:1px solid var(--b);border-radius:10px;
+        padding:11px 13px;margin:14px 0 0;font-size:11px;color:var(--t2);line-height:1.8;white-space:pre-line">
+        ${esc(T.locInfo)}</div>
+      <button class="btn btn-ghost btn-wide" style="margin-top:14px" id="btn-mc">${T.close}</button>
+    </div></div>`;}
+
   /* ── Day detail ── */
   if(S.modal==='detail'&&S.selDate){
-    const ds=S.selDate;
-    const avMap=buildMap();
-    const confMap=buildConfMap();
+    const ds=S.selDate, avMap=buildMap(), confMap=buildConfMap();
     const dayAv=avMap[ds]||{};
-    const dateLabel=fmtDate(ds);
-
     let sections='';
-    for(const [locKey,loc] of Object.entries(LOC)){
+    for(const[locKey,loc]of Object.entries(LOC)){
       const locAv=dayAv[locKey]||{};
       const slots=loc.slots(ds);
-      let rows='';
-      let hasAny=false;
+      let rows='',hasAny=false;
       slots.forEach(sl=>{
         const people=locAv[sl.id]||[];
         const isConf=confMap[`${ds}|${locKey}|${sl.id}`];
-        if(people.length===0&&!isConf)return;
+        if(!people.length&&!isConf)return;
         hasAny=true;
         const ready=people.length>=2;
-        let rowCls='adb-slot';
-        if(isConf)rowCls+=' confirmed';
-        else if(ready)rowCls+=' ready';
-        const countCls=isConf?'sc-conf':ready?'sc-ok':'sc-no';
-        const countLabel=isConf?'✓ 확정':`${people.length}명`;
-        const names=people.map(p=>`<span style="cursor:pointer;text-decoration:underline;text-decoration-color:rgba(255,255,255,.2)" data-del-id="${p.id}" data-del-name="${esc(p.name)}">${esc(p.name)}</span>`).join(', ');
-        rows+=`<div class="${rowCls}">
+        let rowCls='slot-row';
+        if(isConf)rowCls+=' adb-slot confirmed';else if(ready)rowCls+=' adb-slot ready';
+        const ccls=isConf?'sc-conf':ready?'sc-ok':'sc-no';
+        const clbl=isConf?T.confLabel:`${people.length}`;
+        const names=people.map(p=>`<span style="cursor:pointer;text-decoration:underline;
+          text-decoration-color:rgba(255,255,255,.2)"
+          data-del-id="${p.id}" data-del-name="${esc(p.name)}">${esc(p.name)}</span>`).join(', ');
+        rows+=`<div class="${rowCls}" style="padding:7px 10px">
           <div class="adb-info">
-            <div class="adb-slot-name">${sl.id} <span style="font-size:11px;color:var(--t2)">${sl.time}</span></div>
-            ${people.length>0?`<div class="adb-people">${names}</div>`:''}
+            <div class="adb-slot-name">${sl.id} <span style="font-size:10px;color:var(--t2)">${sl.time}</span></div>
+            ${people.length?`<div style="font-size:12px;color:var(--t2);margin-top:3px">${names}</div>`:''}
           </div>
-          <span class="slot-count ${countCls}">${countLabel}</span>
+          <span class="slot-count ${ccls}">${clbl}</span>
         </div>`;
       });
       if(!hasAny)continue;
       sections+=`<div style="margin-bottom:14px">
         <div class="sec-head"><div class="sec-dot" style="background:${loc.color}"></div>${loc.name}</div>
-        ${rows}
-      </div>`;
+        ${rows}</div>`;
     }
-
-    const hasAnyData=Object.values(dayAv).some(l=>Object.values(l).some(s=>s.length>0));
-
+    const hasAny=Object.values(dayAv).some(l=>Object.values(l).some(s=>s.length>0));
     return`<div class="overlay on" id="ov"><div class="modal">
       <div class="modal-handle"></div>
-      <div class="modal-title">${dateLabel}</div>
-      <div class="modal-sub">날짜를 클릭한 사람들의 신청 현황이에요<br><small style="color:var(--t3)">이름을 클릭하면 본인 신청을 취소할 수 있어요</small></div>
-      ${hasAnyData?sections:`<div style="text-align:center;padding:20px;color:var(--t3);font-size:13px">아직 신청한 사람이 없어요</div>`}
-      <button class="btn btn-primary btn-wide" id="btn-go-signup" style="margin-bottom:8px">🤿 나도 신청하기</button>
-      <button class="btn btn-ghost btn-wide" id="btn-mc">닫기</button>
+      <div class="modal-title">${fmtDate(ds)}</div>
+      <div class="modal-sub">${T.detailSub}<br><small style="color:var(--t3)">${T.cancelHint}</small></div>
+      ${hasAny?sections:`<div style="text-align:center;padding:20px;color:var(--t3);font-size:13px">${T.noOne}</div>`}
+      <button class="btn btn-primary btn-wide" id="btn-go-signup" style="margin-bottom:8px">${T.signUpBtn}</button>
+      <button class="btn btn-ghost btn-wide" id="btn-mc">${T.close}</button>
     </div></div>`;}
 
   /* ── Signup form ── */
   if(S.modal==='signup'&&S.selDate){
     const ds=S.selDate;
     let locBlocks='';
-    for(const [locKey,loc] of Object.entries(LOC)){
-      const slots=loc.slots(ds);
-      const checks=slots.map(sl=>`
+    for(const[locKey,loc]of Object.entries(LOC)){
+      const checks=loc.slots(ds).map(sl=>`
         <label class="slot-check" data-loc="${locKey}" data-slot="${sl.id}">
           <div class="chk-box">✓</div>
           <div><div class="chk-label">${sl.id}</div><div class="chk-time">${sl.time}</div></div>
         </label>`).join('');
       locBlocks+=`<div class="loc-block">
         <div class="loc-title ${loc.cls}">${loc.name}</div>
-        <div class="slot-checks">${checks}</div>
-      </div>`;
+        <div class="slot-checks">${checks}</div></div>`;
     }
     return`<div class="overlay on" id="ov"><div class="modal">
       <div class="modal-handle"></div>
-      <div class="modal-title">참여 희망 신청</div>
-      <div class="modal-sub">${fmtDate(ds)} · 가능한 시간 모두 선택하세요</div>
+      <div class="modal-title">${T.signupTitle}</div>
+      <div class="modal-sub">${fmtDate(ds)} · ${T.selectAll}</div>
       ${locBlocks}
       <div style="height:1px;background:var(--b);margin:12px 0"></div>
-      <div class="fg"><label class="fl">이름 <span style="color:var(--red)">*</span></label>
-        <input class="fi" id="s-name" placeholder="홍길동"/></div>
-      <div class="fg"><label class="fl">연락처 (선택)</label>
-        <input class="fi" id="s-contact" placeholder="010-0000-0000"/></div>
-      <div class="fg"><label class="fl">비밀번호 <span style="color:var(--red)">*</span></label>
-        <input class="fi" id="s-pw" type="password" placeholder="나중에 취소할 때 필요해요"/>
-        <div class="fi-hint">⚠ 신청 취소 시 필요합니다. 꼭 기억하세요!</div></div>
+      <div class="fg"><label class="fl">${T.nameLbl} <span style="color:var(--red)">*</span></label>
+        <input class="fi" id="s-name" placeholder="${T.namePh}"/></div>
+      <div class="fg"><label class="fl">${T.contactLbl}</label>
+        <input class="fi" id="s-contact" placeholder="${T.contactPh}"/></div>
+      <div class="fg"><label class="fl">${T.pwLbl} <span style="color:var(--red)">*</span></label>
+        <input class="fi" id="s-pw" type="password" placeholder="${T.pwPh}"/>
+        <div class="fi-hint">${T.pwHint}</div></div>
       <div style="display:flex;gap:8px;margin-top:4px">
-        <button class="btn btn-ghost" style="flex:1;justify-content:center" id="btn-back">← 뒤로</button>
-        <button class="btn btn-primary" style="flex:2;justify-content:center" id="btn-submit">신청하기 →</button>
+        <button class="btn btn-ghost" style="flex:1;justify-content:center" id="btn-back">${T.back}</button>
+        <button class="btn btn-primary" style="flex:2;justify-content:center" id="btn-submit">${T.submit}</button>
       </div>
     </div></div>`;}
 
-  /* ── Delete confirm ── */
+  /* ── Delete (user) ── */
   if(S.modal==='del'&&S.selAv){
     return`<div class="overlay on" id="ov"><div class="modal">
       <div class="modal-handle"></div>
-      <div class="modal-title">신청 취소</div>
-      <div class="modal-sub">${esc(S.selAv.name)}님의 신청을 취소할게요</div>
-      <div class="fg"><label class="fl">비밀번호 확인</label>
-        <input class="fi" id="del-pw" type="password" placeholder="신청 시 입력한 비밀번호"/></div>
+      <div class="modal-title">${T.delTitle}</div>
+      <div class="modal-sub">${esc(S.selAv.name)}</div>
+      <div class="fg"><label class="fl">${T.pwConfirmLbl}</label>
+        <input class="fi" id="del-pw" type="password" placeholder="${T.pwDelPh}"/></div>
       <div style="display:flex;gap:8px">
-        <button class="btn btn-ghost" style="flex:1;justify-content:center" id="btn-mc">취소</button>
-        <button class="btn btn-danger" style="flex:2;justify-content:center" id="btn-del-ok">취소 확인</button>
+        <button class="btn btn-ghost" style="flex:1;justify-content:center" id="btn-mc">${T.cancel}</button>
+        <button class="btn btn-danger" style="flex:2;justify-content:center" id="btn-del-ok">${T.delOk}</button>
       </div>
     </div></div>`;}
 
-  /* ── Admin: all signups ── */
+  /* ── Admin edit ── */
+  if(S.modal==='admin-edit'&&S.editId){
+    const row=monthData.av.find(r=>r.id===S.editId);
+    if(!row)return'';
+    return`<div class="overlay on" id="ov"><div class="modal">
+      <div class="modal-handle"></div>
+      <div class="modal-title">${T.adminEditTitle}</div>
+      <div class="modal-sub" style="margin-bottom:16px">${fmtDate(row.wish_date)}</div>
+      <div class="fg"><label class="fl">${T.nameLbl}</label>
+        <input class="fi" id="edit-name" value="${esc(row.name)}" placeholder="${T.namePh}"/></div>
+      <div class="fg"><label class="fl">${T.contactLbl}</label>
+        <input class="fi" id="edit-contact" value="${esc(row.contact||'')}" placeholder="${T.contactPh}"/></div>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn btn-ghost" style="flex:1;justify-content:center" id="btn-mc">${T.cancel}</button>
+        <button class="btn btn-primary" style="flex:2;justify-content:center" id="btn-edit-save">${T.saveBtn}</button>
+      </div>
+    </div></div>`;}
+
+  /* ── Admin all signups ── */
   if(S.modal==='admin-all'){
-    const avMap=buildMap();
-    const confMap=buildConfMap();
+    const avMap=buildMap(), confMap=buildConfMap();
     const today=todayStr();
     const dates=Object.keys(avMap).filter(d=>d>=today).sort();
-
-    if(dates.length===0){
-      return`<div class="overlay on" id="ov"><div class="modal">
-        <div class="modal-handle"></div>
-        <div class="modal-title">전체 신청 현황</div>
-        <div style="text-align:center;padding:30px;color:var(--t3)">아직 신청이 없어요</div>
-        <button class="btn btn-ghost btn-wide" id="btn-mc">닫기</button>
-      </div></div>`;}
-
     let content='';
     dates.forEach(ds=>{
       const dayAv=avMap[ds];
-      let slotRows='';
-      let hasReady=false;
-      for(const [locKey,loc] of Object.entries(LOC)){
+      let slotRows='',hasReady=false;
+      for(const[locKey,loc]of Object.entries(LOC)){
         const locAv=dayAv[locKey]||{};
-        const slots=loc.slots(ds);
-        slots.forEach(sl=>{
+        loc.slots(ds).forEach(sl=>{
           const people=locAv[sl.id]||[];
-          if(people.length===0)return;
+          if(!people.length)return;
           const isConf=confMap[`${ds}|${locKey}|${sl.id}`];
           const ready=people.length>=2;
           if(ready&&!isConf)hasReady=true;
           let rowCls='adb-slot';
-          if(isConf)rowCls+=' confirmed';
-          else if(ready)rowCls+=' ready';
-          const nameList=people.map(p=>`${p.name}${p.contact?` (${p.contact})`:''}`).join(', ');
+          if(isConf)rowCls+=' confirmed';else if(ready)rowCls+=' ready';
           const adminBtns=isConf
-            ?`<button class="btn btn-ghost btn-sm" data-unconf="${ds}" data-loc="${locKey}" data-slot="${sl.id}">확정 취소</button>`
-            :ready?`<button class="btn btn-success btn-sm" data-conf="${ds}" data-loc="${locKey}" data-slot="${sl.id}">강습 확정</button>`:'';
-          slotRows+=`<div class="${rowCls}" style="gap:8px">
-            <div class="adb-info" style="min-width:0">
-              <div class="adb-slot-name" style="font-size:12px">${loc.short} ${sl.id} <span style="color:var(--t2)">${sl.time}</span></div>
-              <div class="adb-people">${esc(nameList)}</div>
+            ?`<button class="btn btn-ghost btn-sm" data-unconf="${ds}" data-loc="${locKey}" data-slot="${sl.id}">${T.unconfBtn}</button>`
+            :ready?`<button class="btn btn-success btn-sm" data-conf="${ds}" data-loc="${locKey}" data-slot="${sl.id}">${T.confBtn}</button>`:'';
+          const personRows=people.map(p=>`
+            <div class="person-row">
+              <div>
+                <div class="person-name">${esc(p.name)}</div>
+                ${p.contact?`<div class="person-contact">${esc(p.contact)}</div>`:''}
+              </div>
+              <div class="person-actions">
+                <button class="btn btn-warn btn-sm" data-edit-id="${p.id}">✏ ${T.editBtn}</button>
+                <button class="btn btn-danger btn-sm" data-adm-del="${p.id}" data-adm-name="${esc(p.name)}">✕ ${T.delBtn}</button>
+              </div>
+            </div>`).join('');
+          slotRows+=`<div class="${rowCls}" style="flex-direction:column;align-items:stretch;gap:6px">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">
+              <div class="adb-slot-name">${loc.short} ${sl.id} <span style="color:var(--t2);font-size:11px">${sl.time}</span></div>
+              <div style="display:flex;align-items:center;gap:6px">
+                ${isConf?`<span class="conf-pill">${T.confLabel}</span>`:ready?`<span class="slot-count sc-ok">${people.length}</span>`:`<span class="slot-count sc-no">${people.length}</span>`}
+                ${adminBtns}
+              </div>
             </div>
-            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
-              ${isConf?`<span class="conf-pill">✓ 확정</span>`:ready?`<span class="slot-count sc-ok">${people.length}명</span>`:`<span class="slot-count sc-no">${people.length}명</span>`}
-              ${adminBtns}
-            </div>
+            <div style="background:rgba(0,0,0,.2);border-radius:8px;padding:4px 8px">${personRows}</div>
           </div>`;
         });
       }
       if(!slotRows)return;
       content+=`<div class="admin-day-block">
-        <div class="adb-date">${fmtDate(ds)}${hasReady?' <span style="font-size:11px;color:var(--green)">● 개설 가능</span>':''}</div>
+        <div class="adb-date">${fmtDate(ds)}${hasReady?` <span style="font-size:11px;color:var(--green)">${T.canOpen}</span>`:''}</div>
         ${slotRows}
       </div>`;
     });
-
-    return`<div class="overlay on" id="ov"><div class="modal" style="max-width:520px">
+    return`<div class="overlay on" id="ov"><div class="modal" style="max-width:540px">
       <div class="modal-handle"></div>
-      <div class="modal-title">전체 신청 현황</div>
-      <div class="modal-sub" style="margin-bottom:16px">${monthData.av.length}건 신청 · 2명 이상인 항목에 강습 확정 버튼이 나와요</div>
-      ${content||'<div style="text-align:center;padding:20px;color:var(--t3)">이번 달 신청이 없어요</div>'}
-      <button class="btn btn-ghost btn-wide" style="margin-top:8px" id="btn-mc">닫기</button>
+      <div class="modal-title">${T.adminAllTitle}</div>
+      <div class="modal-sub" style="margin-bottom:16px">${T.adminAllSub(monthData.av.length)}</div>
+      ${content||`<div style="text-align:center;padding:20px;color:var(--t3)">${T.thisMonthNo}</div>`}
+      <button class="btn btn-ghost btn-wide" style="margin-top:8px" id="btn-mc">${T.close}</button>
+    </div></div>`;}
+
+  /* ── Admin notice editor ── */
+  if(S.modal==='admin-notice'){
+    const cur=activeNotice||{content:'',active:false};
+    return`<div class="overlay on" id="ov"><div class="modal">
+      <div class="modal-handle"></div>
+      <div class="modal-title">${T.noticeMgrTitle}</div>
+      <div class="modal-sub">${T.noticeMgrSub}</div>
+      <div class="fg"><label class="fl">${T.noticeTextLbl}</label>
+        <textarea class="notice-textarea" id="notice-text"
+          placeholder="공지 내용 / Notice content">${esc(cur.content)}</textarea></div>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button class="btn btn-ghost" style="flex:1;justify-content:center" id="btn-mc">${T.cancel}</button>
+        <button class="btn btn-danger btn-sm" style="flex:1;justify-content:center" id="btn-notice-off">${T.noticeOffBtn}</button>
+        <button class="btn btn-primary" style="flex:2;justify-content:center" id="btn-notice-save">${T.noticeSaveBtn}</button>
+      </div>
     </div></div>`;}
 
   return'';}
 
-/* ════════════════════════════════════════
-   RENDER MAIN
-════════════════════════════════════════ */
 function render(){
   document.getElementById('app').innerHTML=cfg?rCalendar():rSetup();
   bind();
 }
 
-/* ════════════════════════════════════════
-   EVENTS
-════════════════════════════════════════ */
+/* ══ EVENTS ════════════════════════════════════════════════════ */
 function bind(){
   const $=id=>document.getElementById(id);
   const on=(id,ev,fn)=>{const el=$(id);if(el)el.addEventListener(ev,fn);};
   const val=id=>{const el=$(id);return el?el.value.trim():'';};
-  const close=()=>{S.modal=null;S.selAv=null;render();};
+  const close=()=>{S.modal=null;S.selAv=null;S.editId=null;render();};
+
+  /* lang */
+  on('btn-lang','click',()=>{
+    curLang=curLang==='ko'?'en':'ko';
+    T=TRANS[curLang];ls('fd_lang',curLang);
+    render();
+  });
 
   /* tabs */
   document.querySelectorAll('.tabn').forEach(t=>t.addEventListener('click',()=>{
@@ -722,27 +873,29 @@ function bind(){
   /* setup */
   on('btn-conn','click',()=>{
     const url=val('inp-url'),anon=val('inp-anon'),svc=val('inp-svc');
-    if(!url||!anon){toast('URL과 Anon Key를 입력해주세요','err');return;}
+    if(!url||!anon){toast(T.v_name,'err');return;}
     cfg={url,anonKey:anon};lsJ('fd_cfg',cfg);
     if(svc){admK=svc;ls('fd_adm',svc);}
-    initSB();loadMonth();
+    initSB();loadMonth();loadNotice();
   });
-  on('btn-copy-sql','click',()=>navigator.clipboard.writeText(SQL).then(()=>toast('SQL 복사됐어요!')));
+  on('btn-copy-sql','click',()=>navigator.clipboard.writeText(SQL).then(()=>toast('SQL copied!')));
 
   /* header */
+  on('btn-help','click',()=>{S.modal='help';render();});
   on('btn-admin','click',()=>{
-    const k=prompt('서비스 롤 키 입력 (Settings → API Keys → Legacy → service_role)');
+    const k=prompt(T.adminPrompt);
     if(!k)return;admK=k;ls('fd_adm',k);
     sbAdmin=supabase.createClient(cfg.url,k);
     S.view='admin';render();
   });
   on('btn-exit','click',()=>{S.view='main';S.modal=null;render();});
   on('btn-reset','click',()=>{
-    if(!confirm('설정 초기화할까요?'))return;
+    if(!confirm(T.resetConfirm))return;
     ['fd_cfg','fd_adm'].forEach(k=>localStorage.removeItem(k));
     cfg=null;admK='';sb=null;sbAdmin=null;render();
   });
   on('btn-view-all','click',()=>{S.modal='admin-all';render();});
+  on('btn-notice-mgr','click',()=>{S.modal='admin-notice';render();});
 
   /* nav */
   on('btn-prev','click',()=>{if(curMonth===0){curMonth=11;curYear--;}else curMonth--;loadMonth();});
@@ -750,17 +903,15 @@ function bind(){
 
   /* day click */
   document.querySelectorAll('.day:not(.empty)').forEach(cell=>{
-    cell.addEventListener('click',()=>{
-      S.selDate=cell.dataset.date;S.modal='detail';render();
-    });
+    cell.addEventListener('click',()=>{S.selDate=cell.dataset.date;S.modal='detail';render();});
   });
 
-  /* detail modal */
+  /* detail */
   on('btn-go-signup','click',()=>{S.modal='signup';render();});
   on('btn-mc','click',close);
   on('btn-back','click',()=>{S.modal='detail';render();});
 
-  /* delete from detail */
+  /* user delete */
   document.querySelectorAll('[data-del-id]').forEach(el=>{
     el.addEventListener('click',e=>{
       e.stopPropagation();
@@ -772,42 +923,38 @@ function bind(){
   /* slot checkboxes */
   document.querySelectorAll('.slot-check').forEach(el=>{
     el.addEventListener('click',()=>{
-      const loc=LOC[el.dataset.loc];
-      el.classList.toggle(loc.selCls);
+      const loc=LOC[el.dataset.loc];el.classList.toggle(loc.selCls);
     });
   });
 
   /* signup submit */
   on('btn-submit','click',async()=>{
     const name=val('s-name'),pw=val('s-pw');
-    if(!name){toast('이름을 입력해주세요','err');return;}
-    if(!pw){toast('비밀번호를 입력해주세요','err');return;}
+    if(!name){toast(T.v_name,'err');return;}
+    if(!pw){toast(T.v_pw,'err');return;}
     const selected=[];
     document.querySelectorAll('.slot-check').forEach(el=>{
-      const loc=LOC[el.dataset.loc];
-      if(el.classList.contains(loc.selCls)){
+      if(el.classList.contains(LOC[el.dataset.loc].selCls))
         selected.push({loc:el.dataset.loc,slot:el.dataset.slot});
-      }
     });
-    if(selected.length===0){toast('시간대를 하나 이상 선택해주세요','err');return;}
+    if(!selected.length){toast(T.v_slot,'err');return;}
     const btn=$('btn-submit');if(btn)btn.disabled=true;
     const ok=await apiSignup(S.selDate,selected,name,val('s-contact'),pw);
     if(btn)btn.disabled=false;
     if(ok){S.modal='detail';await loadMonth();}
   });
 
-  /* delete confirm */
+  /* user delete confirm */
   on('btn-del-ok','click',async()=>{
-    const pw=val('del-pw');
     const btn=$('btn-del-ok');if(btn)btn.disabled=true;
-    const ok=await apiDelete(S.selAv.id,pw);
+    const ok=await apiDelete(S.selAv.id,val('del-pw'));
     if(btn)btn.disabled=false;
     if(ok){S.modal='detail';await loadMonth();}
   });
   on('del-pw','keydown',e=>{if(e.key==='Enter')$('btn-del-ok')?.click();});
   on('s-pw','keydown',e=>{if(e.key==='Enter')$('btn-submit')?.click();});
 
-  /* admin confirm/unconfirm */
+  /* admin: confirm / unconfirm */
   document.querySelectorAll('[data-conf]').forEach(btn=>{
     btn.addEventListener('click',async()=>{
       btn.disabled=true;
@@ -823,16 +970,55 @@ function bind(){
     });
   });
 
+  /* admin: edit signup */
+  document.querySelectorAll('[data-edit-id]').forEach(btn=>{
+    btn.addEventListener('click',()=>{S.editId=btn.dataset.editId;S.modal='admin-edit';render();});
+  });
+  on('btn-edit-save','click',async()=>{
+    const name=val('edit-name');
+    if(!name){toast(T.v_name,'err');return;}
+    const btn=$('btn-edit-save');if(btn)btn.disabled=true;
+    const ok=await apiAdminEdit(S.editId,name,val('edit-contact'));
+    if(btn)btn.disabled=false;
+    if(ok){S.editId=null;S.modal='admin-all';await loadMonth();}
+  });
+
+  /* admin: delete signup */
+  document.querySelectorAll('[data-adm-del]').forEach(btn=>{
+    btn.addEventListener('click',async()=>{
+      if(!confirm(`${T.adminDelConfirm}\n"${btn.dataset.admName}"`))return;
+      btn.disabled=true;
+      const ok=await apiAdminDelete(btn.dataset.admDel);
+      btn.disabled=false;
+      if(ok){S.modal='admin-all';await loadMonth();}
+    });
+  });
+
+  /* notice */
+  on('btn-notice-ok','click',()=>{
+    if(activeNotice)sessionStorage.setItem('nd_'+activeNotice.updated_at,'1');
+    S.modal=null;render();
+  });
+  on('btn-notice-save','click',async()=>{
+    const txt=document.getElementById('notice-text')?.value?.trim()||'';
+    if(!txt){toast(T.v_notice,'err');return;}
+    const btn=$('btn-notice-save');if(btn)btn.disabled=true;
+    await apiSetNotice(txt,true);
+    if(btn)btn.disabled=false;
+    S.modal=null;render();
+  });
+  on('btn-notice-off','click',async()=>{
+    await apiSetNotice('',false);S.modal=null;render();
+  });
+
   /* overlay backdrop */
   const ov=$('ov');
   if(ov)ov.addEventListener('click',e=>{if(e.target===ov)close();});
 }
 
-/* ════════════════════════════════════════
-   INIT
-════════════════════════════════════════ */
+/* ══ INIT ══════════════════════════════════════════════════════ */
 initSB();render();
-if(cfg)loadMonth();
+if(cfg){loadMonth();loadNotice();}
 </script>
 </body>
 </html>
