@@ -1,845 +1,659 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FreeDive — 강습 스케줄</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-  <style>
-    :root {
-      --bg0: #050e1a;
-      --bg1: #091626;
-      --bg2: #0e2040;
-      --card: #112248;
-      --cyan: #00c8ec;
-      --teal: #14b8a6;
-      --green: #22c55e;
-      --amber: #f59e0b;
-      --red: #ef4444;
-      --txt1: #e4f2f8;
-      --txt2: #6da8c4;
-      --txt3: #3a5f78;
-      --bdr: rgba(0,200,236,0.1);
-      --bdr2: rgba(0,200,236,0.28);
-    }
-    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
-    body {
-      background:var(--bg0);
-      color:var(--txt1);
-      font-family:'DM Sans',sans-serif;
-      min-height:100vh;
-      overflow-x:hidden;
-    }
-    body::after {
-      content:'';
-      position:fixed; inset:0; pointer-events:none; z-index:0;
-      background:
-        radial-gradient(ellipse 60% 50% at 10% 15%, rgba(0,200,236,0.07) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 40% at 90% 85%, rgba(20,184,166,0.05) 0%, transparent 70%);
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>FreeDive — 강습 스케줄</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+:root{
+  --bg0:#050e1a;--bg1:#091626;--bg2:#0e2040;--card:#112248;
+  --cyan:#00c8ec;--green:#22c55e;--amber:#f59e0b;--red:#ef4444;
+  --txt1:#e4f2f8;--txt2:#6da8c4;--txt3:#3a5f78;
+  --bdr:rgba(0,200,236,.1);--bdr2:rgba(0,200,236,.28);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg0);color:var(--txt1);font-family:'DM Sans',sans-serif;min-height:100vh;}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 60% 50% at 10% 15%,rgba(0,200,236,.07) 0%,transparent 70%),
+             radial-gradient(ellipse 50% 40% at 90% 85%,rgba(20,184,166,.05) 0%,transparent 70%);}
 
-    /* ── Header ─────────────────────────────────────────────── */
-    header {
-      position:sticky; top:0; z-index:50;
-      background:rgba(5,14,26,0.9);
-      backdrop-filter:blur(18px);
-      border-bottom:1px solid var(--bdr);
-      padding:14px 24px;
-      display:flex; align-items:center; justify-content:space-between;
-    }
-    .logo {
-      font-family:'Bebas Neue',sans-serif;
-      font-size:24px; letter-spacing:3px;
-      color:var(--cyan);
-      text-shadow:0 0 20px rgba(0,200,236,0.5);
-      line-height:1;
-    }
-    .logo small {
-      display:block;
-      font-family:'DM Sans',sans-serif;
-      font-size:10px; font-weight:300;
-      letter-spacing:2px; color:var(--txt3);
-      margin-top:1px; text-transform:uppercase;
-    }
-    .header-actions { display:flex; gap:8px; align-items:center; }
+/* Header */
+header{position:sticky;top:0;z-index:50;background:rgba(5,14,26,.92);
+  backdrop-filter:blur(18px);border-bottom:1px solid var(--bdr);
+  padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;
+  color:var(--cyan);text-shadow:0 0 20px rgba(0,200,236,.5);line-height:1;}
+.logo small{display:block;font-family:'DM Sans',sans-serif;font-size:10px;
+  font-weight:300;letter-spacing:2px;color:var(--txt3);margin-top:1px;text-transform:uppercase;}
 
-    /* ── Buttons ─────────────────────────────────────────────── */
-    .btn {
-      display:inline-flex; align-items:center; gap:5px;
-      padding:8px 16px; border-radius:9px; border:none;
-      cursor:pointer; font-family:'DM Sans',sans-serif;
-      font-size:13px; font-weight:500; transition:all .18s;
-    }
-    .btn-primary { background:var(--cyan); color:#050e1a; }
-    .btn-primary:hover { filter:brightness(1.1); transform:translateY(-1px); box-shadow:0 4px 16px rgba(0,200,236,0.35); }
-    .btn-ghost { background:transparent; color:var(--txt2); border:1px solid var(--bdr); }
-    .btn-ghost:hover { border-color:var(--bdr2); color:var(--txt1); }
-    .btn-success { background:var(--green); color:#fff; }
-    .btn-success:hover { filter:brightness(1.08); }
-    .btn-danger { background:transparent; color:var(--red); border:1px solid rgba(239,68,68,.25); }
-    .btn-danger:hover { background:rgba(239,68,68,.1); }
-    .btn-sm { padding:5px 12px; font-size:12px; }
-    .btn-wide { width:100%; justify-content:center; }
-    .btn:disabled { opacity:.4; cursor:not-allowed; transform:none !important; filter:none !important; }
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:8px 16px;
+  border-radius:9px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;
+  font-size:13px;font-weight:500;transition:all .18s;}
+.btn-primary{background:var(--cyan);color:#050e1a;}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:var(--txt2);border:1px solid var(--bdr);}
+.btn-ghost:hover{border-color:var(--bdr2);color:var(--txt1);}
+.btn-success{background:var(--green);color:#fff;}
+.btn-danger{background:transparent;color:var(--red);border:1px solid rgba(239,68,68,.25);}
+.btn-danger:hover{background:rgba(239,68,68,.1);}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.btn-wide{width:100%;justify-content:center;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
 
-    /* ── Main layout ─────────────────────────────────────────── */
-    main { position:relative; z-index:1; max-width:980px; margin:0 auto; padding:36px 20px 60px; }
-    .page-title { font-family:'Bebas Neue',sans-serif; font-size:38px; letter-spacing:2px; margin-bottom:4px; }
-    .page-sub { font-size:14px; color:var(--txt2); font-weight:300; margin-bottom:24px; line-height:1.6; }
+/* Main */
+main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:28px 16px 60px;}
 
-    /* ── Legend ─────────────────────────────────────────────── */
-    .legend { display:flex; gap:18px; flex-wrap:wrap; margin-bottom:28px; }
-    .legend-item { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--txt2); }
-    .legend-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+/* Calendar header */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.cal-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--txt1);}
+.nav-btn{background:transparent;border:1px solid var(--bdr);color:var(--txt2);
+  border-radius:8px;padding:6px 14px;cursor:pointer;font-size:18px;transition:all .18s;}
+.nav-btn:hover{border-color:var(--bdr2);color:var(--txt1);}
 
-    /* ── Slots grid ──────────────────────────────────────────── */
-    .slots-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(275px,1fr)); gap:16px; }
+/* Legend */
+.legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px;}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--txt2);}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 
-    /* ── Slot card ───────────────────────────────────────────── */
-    .slot-card {
-      background:var(--card);
-      border:1px solid var(--bdr);
-      border-radius:18px; padding:20px;
-      transition:all .22s; position:relative; overflow:hidden;
-    }
-    .slot-card::before {
-      content:''; position:absolute;
-      top:0; left:0; right:0; height:3px;
-      background:var(--txt3); transition:background .22s;
-    }
-    .slot-card.ready::before { background:var(--green); }
-    .slot-card.confirmed::before { background:var(--cyan); }
-    .slot-card:hover { border-color:var(--bdr2); transform:translateY(-3px); box-shadow:0 10px 36px rgba(0,0,0,.45); }
+/* Calendar grid */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+.dow-header{text-align:center;font-size:11px;font-weight:600;
+  color:var(--txt3);padding:6px 0;text-transform:uppercase;letter-spacing:.05em;}
+.day-cell{
+  background:var(--card);border:1px solid var(--bdr);border-radius:10px;
+  padding:8px 6px;min-height:72px;cursor:pointer;transition:all .2s;
+  display:flex;flex-direction:column;position:relative;
+}
+.day-cell:hover{border-color:var(--bdr2);transform:translateY(-1px);}
+.day-cell.empty{background:transparent;border-color:transparent;cursor:default;pointer-events:none;}
+.day-cell.empty:hover{transform:none;}
+.day-cell.has-lesson{border-color:rgba(0,200,236,.25);}
+.day-cell.ready{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.05);}
+.day-cell.confirmed{border-color:rgba(0,200,236,.5);background:rgba(0,200,236,.06);}
+.day-cell.today .day-num{color:var(--cyan);}
 
-    .card-status {
-      display:inline-flex; align-items:center; gap:5px;
-      font-size:11px; font-weight:600; padding:3px 9px;
-      border-radius:20px; margin-bottom:14px;
-    }
-    .cs-open    { background:rgba(58,95,120,.25); color:var(--txt3); }
-    .cs-ready   { background:rgba(34,197,94,.14); color:var(--green); }
-    .cs-confirmed { background:rgba(0,200,236,.14); color:var(--cyan); }
+.day-num{font-size:13px;font-weight:600;color:var(--txt2);margin-bottom:4px;}
+.day-cell.has-lesson .day-num{color:var(--txt1);}
 
-    .card-date-row { display:flex; align-items:flex-end; gap:8px; margin-bottom:12px; }
-    .day-num { font-family:'Bebas Neue',sans-serif; font-size:46px; line-height:1; color:var(--cyan); }
-    .day-info { display:flex; flex-direction:column; padding-bottom:4px; }
-    .day-month { font-size:11px; color:var(--txt2); text-transform:uppercase; letter-spacing:.08em; }
-    .day-dow   { font-size:12px; color:var(--txt3); }
+.day-badges{display:flex;flex-direction:column;gap:3px;flex:1;}
+.day-badge{font-size:10px;padding:2px 5px;border-radius:4px;line-height:1.4;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;}
+.db-open{background:rgba(0,200,236,.12);color:var(--cyan);}
+.db-ready{background:rgba(34,197,94,.15);color:var(--green);}
+.db-confirmed{background:rgba(0,200,236,.2);color:var(--cyan);}
+.db-count{font-size:10px;color:var(--txt3);margin-top:2px;}
 
-    .card-type { font-size:16px; font-weight:600; margin-bottom:6px; }
-    .card-meta { font-size:12px; color:var(--txt2); display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
-    .meta-item { display:flex; align-items:center; gap:3px; }
+/* Modal */
+.overlay{position:fixed;inset:0;z-index:200;background:rgba(5,14,26,.9);
+  backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;
+  padding:16px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.overlay.on{opacity:1;pointer-events:all;}
+.modal{background:var(--card);border:1px solid var(--bdr2);border-radius:20px;
+  padding:24px;width:100%;max-width:420px;
+  transform:translateY(14px);transition:transform .2s;max-height:90vh;overflow-y:auto;}
+.overlay.on .modal{transform:translateY(0);}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;
+  color:var(--cyan);margin-bottom:3px;}
+.modal-sub{font-size:12px;color:var(--txt2);margin-bottom:18px;}
+.modal-btns{display:flex;gap:8px;margin-top:6px;}
 
-    .ptcpt-section { margin-bottom:14px; }
-    .ptcpt-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
-    .ptcpt-label { font-size:10px; font-weight:600; color:var(--txt3); text-transform:uppercase; letter-spacing:.08em; }
-    .count-pill {
-      font-size:11px; font-weight:600; padding:2px 8px; border-radius:20px;
-    }
-    .cp-none  { background:rgba(58,95,120,.2); color:var(--txt3); }
-    .cp-ready { background:rgba(34,197,94,.14); color:var(--green); }
-    .cp-full  { background:rgba(0,200,236,.14); color:var(--cyan); }
+/* Signup list */
+.signup-list{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.signup-item{display:flex;align-items:center;justify-content:space-between;
+  background:rgba(0,0,0,.25);border:1px solid var(--bdr);border-radius:10px;
+  padding:10px 12px;}
+.signup-name{font-size:14px;font-weight:500;}
+.signup-meta{font-size:11px;color:var(--txt3);margin-top:1px;}
+.signup-empty{text-align:center;padding:20px;font-size:13px;color:var(--txt3);font-style:italic;}
 
-    .ptcpt-tags { display:flex; flex-wrap:wrap; gap:5px; }
-    .ptag {
-      font-size:11px; padding:3px 9px;
-      background:rgba(0,200,236,.07);
-      border:1px solid rgba(0,200,236,.12);
-      border-radius:20px; color:var(--txt2);
-    }
-    .ptag.mine { border-color:rgba(0,200,236,.4); color:var(--cyan); }
-    .ptag-empty { font-size:12px; color:var(--txt3); font-style:italic; }
+/* Form */
+.fg{margin-bottom:13px;}
+.fl{display:block;font-size:11px;font-weight:600;color:var(--txt2);
+  margin-bottom:5px;text-transform:uppercase;letter-spacing:.07em;}
+.fi{width:100%;background:rgba(0,0,0,.35);border:1px solid var(--bdr);
+  border-radius:10px;padding:10px 13px;color:var(--txt1);
+  font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .18s;}
+.fi:focus{border-color:var(--cyan);}
+.fi::placeholder{color:var(--txt3);}
+.fi-hint{font-size:11px;color:var(--txt3);margin-top:4px;}
 
-    .card-foot { display:flex; justify-content:flex-end; margin-top:4px; }
+/* Time picker */
+.time-options{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px;}
+.time-opt{background:rgba(0,0,0,.3);border:1px solid var(--bdr);border-radius:8px;
+  padding:8px 4px;text-align:center;font-size:12px;color:var(--txt2);
+  cursor:pointer;transition:all .15s;}
+.time-opt:hover{border-color:var(--bdr2);}
+.time-opt.sel{background:rgba(0,200,236,.12);border-color:var(--cyan);color:var(--cyan);}
 
-    /* ── Modal ───────────────────────────────────────────────── */
-    .overlay {
-      position:fixed; inset:0; z-index:200;
-      background:rgba(5,14,26,.88);
-      backdrop-filter:blur(10px);
-      display:flex; align-items:center; justify-content:center;
-      padding:20px; opacity:0; pointer-events:none;
-      transition:opacity .2s;
-    }
-    .overlay.on { opacity:1; pointer-events:all; }
-    .modal {
-      background:var(--card);
-      border:1px solid var(--bdr2);
-      border-radius:20px; padding:28px;
-      width:100%; max-width:440px;
-      transform:translateY(14px); transition:transform .2s;
-    }
-    .overlay.on .modal { transform:translateY(0); }
-    .modal-title {
-      font-family:'Bebas Neue',sans-serif;
-      font-size:22px; letter-spacing:2px;
-      color:var(--cyan); margin-bottom:4px;
-    }
-    .modal-sub { font-size:13px; color:var(--txt2); margin-bottom:22px; }
-    .modal-divider { border:none; border-top:1px solid var(--bdr); margin:18px 0; }
+/* Delete confirm */
+.del-confirm{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);
+  border-radius:10px;padding:12px;margin-bottom:12px;}
+.del-confirm-title{font-size:12px;font-weight:600;color:var(--red);margin-bottom:8px;}
 
-    /* ── Form ────────────────────────────────────────────────── */
-    .fg { margin-bottom:15px; }
-    .fl {
-      display:block; font-size:11px; font-weight:600;
-      color:var(--txt2); margin-bottom:5px;
-      text-transform:uppercase; letter-spacing:.07em;
-    }
-    .fi {
-      width:100%; background:rgba(0,0,0,.35);
-      border:1px solid var(--bdr); border-radius:10px;
-      padding:10px 13px; color:var(--txt1);
-      font-family:'DM Sans',sans-serif; font-size:14px;
-      outline:none; transition:border-color .18s;
-    }
-    .fi:focus { border-color:var(--cyan); }
-    .fi::placeholder { color:var(--txt3); }
-    input[type=date].fi,
-    input[type=time].fi { color-scheme:dark; }
-    .frow { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .modal-btns { display:flex; gap:8px; margin-top:6px; }
+/* Toast */
+#toast{position:fixed;bottom:24px;left:50%;
+  transform:translateX(-50%) translateY(70px);
+  background:var(--card);border:1px solid var(--bdr);border-radius:12px;
+  padding:11px 22px;font-size:14px;z-index:400;
+  transition:transform .28s cubic-bezier(.34,1.56,.64,1);
+  white-space:nowrap;pointer-events:none;box-shadow:0 8px 30px rgba(0,0,0,.6);}
+#toast.show{transform:translateX(-50%) translateY(0);}
+#toast.ok{color:var(--green);border-color:rgba(34,197,94,.3);}
+#toast.err{color:var(--red);border-color:rgba(239,68,68,.3);}
 
-    /* ── Code block ──────────────────────────────────────────── */
-    .codeblock {
-      background:rgba(0,0,0,.5); border:1px solid var(--bdr);
-      border-radius:10px; padding:14px;
-      font-size:11px; font-family:monospace; color:var(--txt2);
-      white-space:pre; overflow-x:auto; line-height:1.65;
-      max-height:240px; overflow-y:auto;
-    }
+/* Setup */
+.setup-wrap{max-width:480px;margin:60px auto;padding:0 16px;}
+.setup-logo{font-family:'Bebas Neue',sans-serif;font-size:52px;letter-spacing:5px;
+  color:var(--cyan);text-shadow:0 0 36px rgba(0,200,236,.5);text-align:center;}
+.setup-tag{text-align:center;font-size:13px;color:var(--txt2);font-weight:300;
+  letter-spacing:.5px;margin-top:4px;margin-bottom:28px;}
+.setup-card{background:var(--card);border:1px solid var(--bdr);border-radius:20px;padding:28px;}
+.tabs{display:flex;border-bottom:1px solid var(--bdr);margin-bottom:20px;}
+.tabn{padding:8px 14px;font-size:13px;cursor:pointer;color:var(--txt3);
+  border-bottom:2px solid transparent;background:none;
+  border-top:none;border-left:none;border-right:none;
+  font-family:'DM Sans',sans-serif;transition:all .18s;}
+.tabn.on{color:var(--cyan);border-bottom-color:var(--cyan);}
+.step-n{display:inline-flex;align-items:center;justify-content:center;
+  width:20px;height:20px;background:var(--cyan);color:#050e1a;
+  border-radius:50%;font-size:10px;font-weight:700;margin-right:6px;}
+.step-h{font-size:13px;font-weight:600;margin-bottom:5px;}
+.step-d{font-size:12px;color:var(--txt2);margin-bottom:12px;line-height:1.65;}
+.codeblock{background:rgba(0,0,0,.5);border:1px solid var(--bdr);border-radius:10px;
+  padding:12px;font-size:10.5px;font-family:monospace;color:var(--txt2);
+  white-space:pre;overflow-x:auto;line-height:1.65;max-height:220px;overflow-y:auto;}
 
-    /* ── Toast ───────────────────────────────────────────────── */
-    #toast {
-      position:fixed; bottom:24px; left:50%;
-      transform:translateX(-50%) translateY(70px);
-      background:var(--card); border:1px solid var(--bdr);
-      border-radius:12px; padding:11px 22px;
-      font-size:14px; z-index:400;
-      transition:transform .28s cubic-bezier(.34,1.56,.64,1);
-      white-space:nowrap; pointer-events:none;
-      box-shadow:0 8px 30px rgba(0,0,0,.6);
-    }
-    #toast.show { transform:translateX(-50%) translateY(0); }
-    #toast.ok  { color:var(--green); border-color:rgba(34,197,94,.3); }
-    #toast.err { color:var(--red);   border-color:rgba(239,68,68,.3); }
+/* Admin badge */
+.admin-badge{background:rgba(245,158,11,.14);border:1px solid rgba(245,158,11,.28);
+  color:var(--amber);font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;}
 
-    /* ── Setup page ──────────────────────────────────────────── */
-    .setup-wrap { max-width:500px; margin:60px auto; padding:0 20px; }
-    .setup-head { text-align:center; margin-bottom:28px; }
-    .setup-biglogo {
-      font-family:'Bebas Neue',sans-serif;
-      font-size:52px; letter-spacing:5px;
-      color:var(--cyan); text-shadow:0 0 36px rgba(0,200,236,.5);
-    }
-    .setup-tagline { font-size:13px; color:var(--txt2); font-weight:300; letter-spacing:.5px; margin-top:4px; }
-    .setup-card { background:var(--card); border:1px solid var(--bdr); border-radius:20px; padding:30px; }
+/* Status badge */
+.status-pill{display:inline-flex;align-items:center;gap:4px;
+  font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;margin-bottom:12px;}
+.sp-open{background:rgba(58,95,120,.2);color:var(--txt3);}
+.sp-ready{background:rgba(34,197,94,.14);color:var(--green);}
+.sp-confirmed{background:rgba(0,200,236,.14);color:var(--cyan);}
 
-    /* tabs */
-    .tabs { display:flex; border-bottom:1px solid var(--bdr); margin-bottom:22px; }
-    .tabn {
-      padding:8px 16px; font-size:13px; cursor:pointer;
-      color:var(--txt3); border-bottom:2px solid transparent;
-      background:none; border-top:none; border-left:none; border-right:none;
-      font-family:'DM Sans',sans-serif; transition:all .18s;
-    }
-    .tabn.on { color:var(--cyan); border-bottom-color:var(--cyan); }
-    .tabn:hover { color:var(--txt2); }
-
-    .step-num {
-      display:inline-flex; align-items:center; justify-content:center;
-      width:20px; height:20px; background:var(--cyan); color:#050e1a;
-      border-radius:50%; font-size:10px; font-weight:700; margin-right:7px;
-    }
-    .step-head { font-size:13px; font-weight:600; margin-bottom:6px; color:var(--txt1); }
-    .step-desc { font-size:12px; color:var(--txt2); margin-bottom:13px; line-height:1.65; }
-
-    /* ── Admin page ──────────────────────────────────────────── */
-    .admin-badge {
-      background:rgba(245,158,11,.14); border:1px solid rgba(245,158,11,.28);
-      color:var(--amber); font-size:11px; font-weight:600;
-      padding:3px 9px; border-radius:20px;
-    }
-    .stats-row { display:flex; gap:12px; flex-wrap:wrap; margin-bottom:28px; }
-    .stat-card {
-      background:var(--card); border:1px solid var(--bdr);
-      border-radius:13px; padding:14px 18px; flex:1; min-width:100px;
-    }
-    .stat-val { font-size:26px; font-weight:600; }
-    .stat-lbl { font-size:11px; color:var(--txt3); margin-top:2px; }
-
-    .admin-slot {
-      background:var(--card); border:1px solid var(--bdr);
-      border-radius:14px; padding:18px; margin-bottom:12px;
-    }
-    .asl-head { display:flex; align-items:flex-start; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
-    .asl-title { font-size:15px; font-weight:600; }
-    .asl-meta  { font-size:12px; color:var(--txt2); margin-top:2px; }
-    .asl-actions { display:flex; gap:7px; flex-shrink:0; }
-    .asl-ptcpt-list { display:flex; flex-wrap:wrap; gap:6px; }
-    .ap-tag {
-      background:rgba(0,200,236,.06); border:1px solid var(--bdr);
-      border-radius:8px; padding:4px 10px;
-      font-size:12px; color:var(--txt2);
-    }
-    .ap-contact { color:var(--txt3); font-size:11px; margin-left:4px; }
-
-    /* ── Loading / Empty ─────────────────────────────────────── */
-    .loading { display:flex; align-items:center; justify-content:center; gap:10px; padding:70px; color:var(--txt3); font-size:14px; }
-    .spin { width:20px; height:20px; border:2px solid var(--bdr); border-top-color:var(--cyan); border-radius:50%; animation:rot .8s linear infinite; }
-    @keyframes rot { to { transform:rotate(360deg); } }
-    .empty { text-align:center; padding:70px 20px; color:var(--txt3); }
-    .empty-icon { font-size:42px; margin-bottom:12px; }
-    .empty-ttl { font-size:16px; color:var(--txt2); margin-bottom:6px; }
-    .empty-dsc { font-size:13px; font-weight:300; }
-
-    @media (max-width:540px) {
-      .frow { grid-template-columns:1fr; }
-      .asl-head { flex-direction:column; }
-      .legend { gap:12px; }
-    }
-  </style>
+@media(max-width:500px){
+  .cal-grid{gap:2px;}
+  .day-cell{min-height:56px;padding:5px 4px;}
+  .day-num{font-size:12px;}
+  .day-badge{font-size:9px;}
+}
+</style>
 </head>
 <body>
 <div id="app"></div>
 <div id="toast"></div>
-
 <script>
-/* ───────────────────────────────────────────────────────────────
-   CONFIG — 직접 여기에 넣어도 됩니다 (GitHub Pages 배포용)
-   비워두면 앱이 설정 화면을 띄워줘요
-────────────────────────────────────────────────────────────────── */
-const HARDCODED = {
-  url:     '',   // 예: 'https://abcxyz.supabase.co'
-  anonKey: '',   // Settings > API > anon public
-};
+/* ── CONFIG ─────────────────────────────────── */
+const HARDCODED={url:'',anonKey:''};
 
-/* ───────────────────────────────────────────────────────────────
-   SQL — Supabase SQL Editor에 복붙해서 실행하세요
-────────────────────────────────────────────────────────────────── */
-const SQL = `-- ① 강습 시간대 테이블
-create table if not exists time_slots (
+/* ── SQL ────────────────────────────────────── */
+const SQL=`-- ① 기존 테이블 제거 (재설치 시)
+drop table if exists signups;
+drop table if exists lessons;
+
+-- ② 강습 날짜 테이블
+create table lessons (
   id              uuid default gen_random_uuid() primary key,
-  date            date        not null,
-  start_time      time        not null,
-  end_time        time        not null,
+  lesson_date     date        not null unique,
+  time_range      text        default '오전 10시~12시',
   location        text        default '풀장',
   lesson_type     text        default '기초 강습',
-  max_participants int         default 6,
+  max_participants int        default 6,
   status          text        default 'open',
   notes           text,
   created_at      timestamptz default now()
 );
 
--- ② 참여 가능 표시 테이블
-create table if not exists availability (
-  id         uuid default gen_random_uuid() primary key,
-  slot_id    uuid references time_slots(id) on delete cascade,
-  name       text not null,
-  contact    text,
-  user_token text not null,
-  created_at timestamptz default now(),
-  unique(slot_id, user_token)
+-- ③ 참여 신청 테이블
+create table signups (
+  id          uuid default gen_random_uuid() primary key,
+  lesson_id   uuid references lessons(id) on delete cascade,
+  name        text not null,
+  contact     text,
+  password    text not null,
+  created_at  timestamptz default now(),
+  unique(lesson_id, name)
 );
 
--- ③ RLS 보안 설정
-alter table time_slots  enable row level security;
-alter table availability enable row level security;
+-- ④ RLS 보안 설정
+alter table lessons  enable row level security;
+alter table signups  enable row level security;
 
-create policy "읽기 허용 - slots"        on time_slots  for select using (true);
-create policy "읽기 허용 - availability" on availability for select using (true);
-create policy "참여 등록 허용"            on availability for insert with check (true);
-create policy "참여 취소 허용"            on availability for delete using (true);`;
+create policy "읽기_lessons"  on lessons  for select using (true);
+create policy "읽기_signups"  on signups  for select using (true);
+create policy "등록_signups"  on signups  for insert with check (true);
+create policy "삭제_signups"  on signups  for delete using (true);`;
 
-/* ═══════════════════════════════════════════════════════════════
-   STATE
-═══════════════════════════════════════════════════════════════ */
-let sb = null, sbAdmin = null;
-let userToken = ls('fd_tok') || uid();
-let cfg  = HARDCODED.url ? HARDCODED : (lsJ('fd_cfg') || null);
-let admK = ls('fd_adm') || '';
-let S = {
-  view:        'main',   // 'setup' | 'main' | 'admin'
-  slots:       [],
-  loading:     true,
-  modal:       null,     // 'join' | 'addslot' | 'sql'
-  selSlot:     null,
-};
-ls('fd_tok', userToken);
+/* ── STATE ──────────────────────────────────── */
+let sb=null,sbAdmin=null;
+let cfg=HARDCODED.url?HARDCODED:(lsJ('fd_cfg')||null);
+let admK=ls('fd_adm')||'';
+let curYear=new Date().getFullYear();
+let curMonth=new Date().getMonth();
+let lessons=[];
+let S={view:'main',modal:null,selLesson:null,delSignup:null};
 
-/* ═══════════════════════════════════════════════════════════════
-   HELPERS
-═══════════════════════════════════════════════════════════════ */
-function uid(){ return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==='x'?r:(r&0x3|0x8)).toString(16);}); }
-function ls(k,v){ if(v!==undefined){ localStorage.setItem(k,v); return v; } return localStorage.getItem(k); }
-function lsJ(k,v){ if(v!==undefined){ localStorage.setItem(k,JSON.stringify(v)); return v; } try{ return JSON.parse(localStorage.getItem(k)); }catch{ return null; } }
-function esc(s){ if(!s)return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function fmt(t){ return t?t.slice(0,5):''; }
-function fmtDate(ds){
-  const d=new Date(ds+'T12:00:00');
-  const dow=['일','월','화','수','목','금','토'];
-  return {
-    day:d.getDate(), month:(d.getMonth()+1)+'월',
-    dow:dow[d.getDay()]+'요일',
-    full:`${d.getFullYear()}년 ${d.getMonth()+1}월 ${d.getDate()}일`
-  };
-}
-function toast(msg, type='ok'){
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.className=`show ${type}`;
-  setTimeout(()=>el.className='',2600);
-}
+/* ── UTILS ──────────────────────────────────── */
+function ls(k,v){if(v!==undefined){localStorage.setItem(k,v);return v;}return localStorage.getItem(k);}
+function lsJ(k,v){if(v!==undefined){localStorage.setItem(k,JSON.stringify(v));return v;}try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function toast(m,t='ok'){const e=document.getElementById('toast');e.textContent=m;e.className='show '+t;setTimeout(()=>e.className='',2600);}
+const DAYS=['일','월','화','수','목','금','토'];
+const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
 
-/* ═══════════════════════════════════════════════════════════════
-   SUPABASE API
-═══════════════════════════════════════════════════════════════ */
+function today(){return new Date().toISOString().split('T')[0];}
+function dateStr(y,m,d){return`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;}
+
+/* ── SUPABASE ───────────────────────────────── */
 function initSB(){
-  if(!cfg) return;
-  sb=supabase.createClient(cfg.url, cfg.anonKey);
-  if(admK) sbAdmin=supabase.createClient(cfg.url, admK);
+  if(!cfg)return;
+  sb=supabase.createClient(cfg.url,cfg.anonKey);
+  if(admK)sbAdmin=supabase.createClient(cfg.url,admK);
 }
 
-async function loadSlots(){
-  if(!sb){ S.loading=false; render(); return; }
-  S.loading=true; render();
-  const today=new Date().toISOString().split('T')[0];
-  const {data,error}=await sb
-    .from('time_slots')
-    .select('*, availability(id,name,contact,user_token)')
-    .gte('date',today)
-    .order('date').order('start_time');
-  if(error){ toast('로드 실패: '+error.message,'err'); S.loading=false; render(); return; }
-  S.slots=data||[]; S.loading=false; render();
+async function loadLessons(){
+  if(!sb)return;
+  const y=curYear,m=curMonth;
+  const from=dateStr(y,m,1);
+  const to=dateStr(m===11?y+1:y,m===11?0:m+1,1);
+  const{data,error}=await sb.from('lessons')
+    .select('*,signups(id,name,contact,password,created_at)')
+    .gte('lesson_date',from).lt('lesson_date',to)
+    .order('lesson_date');
+  if(error){toast('로드 실패','err');return;}
+  lessons=data||[];
+  render();
 }
 
-async function apiJoin(slotId, name, contact){
-  const {error}=await sb.from('availability').insert({slot_id:slotId,name,contact:contact||null,user_token:userToken});
+async function apiAddLesson(f){
+  if(!sbAdmin){toast('관리자 키 필요','err');return false;}
+  const{error}=await sbAdmin.from('lessons').insert({
+    lesson_date:f.date,time_range:f.time,location:f.loc,
+    lesson_type:f.type,max_participants:parseInt(f.max)||6,notes:f.notes||null
+  });
   if(error){
-    if(error.code==='23505') toast('이미 참여 의사를 표시했어요 😊','err');
-    else toast('저장 실패: '+error.message,'err');
+    if(error.code==='23505')toast('이미 그 날짜에 강습이 있어요','err');
+    else toast('추가 실패: '+error.message,'err');
     return false;
   }
-  toast('참여 의사가 등록되었어요! 🤿');
-  return true;
+  toast('강습 날짜가 추가됐어요 🎉');return true;
 }
 
-async function apiLeave(slotId){
-  const {error}=await sb.from('availability').delete().eq('slot_id',slotId).eq('user_token',userToken);
-  if(error){ toast('취소 실패','err'); return false; }
-  toast('참여 취소했어요'); return true;
+async function apiSignup(lessonId,name,contact,password){
+  const{error}=await sb.from('signups').insert({lesson_id:lessonId,name,contact:contact||null,password});
+  if(error){
+    if(error.code==='23505')toast('이미 같은 이름으로 신청됐어요','err');
+    else toast('신청 실패: '+error.message,'err');
+    return false;
+  }
+  toast('신청 완료! 🤿');return true;
 }
 
-async function apiConfirm(slotId){
-  if(!sbAdmin){ toast('관리자 키 필요','err'); return; }
-  const {error}=await sbAdmin.from('time_slots').update({status:'confirmed'}).eq('id',slotId);
-  if(error){ toast('확정 실패: '+error.message,'err'); return; }
-  toast('강습이 확정되었어요 ✓'); loadSlots();
+async function apiDeleteSignup(signupId){
+  const{error}=await sb.from('signups').delete().eq('id',signupId);
+  if(error){toast('삭제 실패','err');return false;}
+  toast('취소되었어요');return true;
 }
 
-async function apiDelete(slotId){
-  if(!sbAdmin){ toast('관리자 키 필요','err'); return; }
-  if(!confirm('이 시간대를 삭제할까요?')) return;
-  const {error}=await sbAdmin.from('time_slots').delete().eq('id',slotId);
-  if(error){ toast('삭제 실패: '+error.message,'err'); return; }
-  toast('삭제되었어요'); loadSlots();
+async function apiConfirm(lessonId){
+  if(!sbAdmin){toast('관리자 키 필요','err');return;}
+  const{error}=await sbAdmin.from('lessons').update({status:'confirmed'}).eq('id',lessonId);
+  if(error){toast('확정 실패','err');return;}
+  toast('강습 확정! ✓');loadLessons();
 }
 
-async function apiAddSlot(f){
-  if(!sbAdmin){ toast('관리자 키 필요','err'); return false; }
-  const {error}=await sbAdmin.from('time_slots').insert({
-    date:f.date, start_time:f.st, end_time:f.et,
-    location:f.loc||'풀장', lesson_type:f.type||'기초 강습',
-    max_participants:parseInt(f.max)||6, notes:f.notes||null
-  });
-  if(error){ toast('추가 실패: '+error.message,'err'); return false; }
-  toast('시간대가 추가되었어요 🎉'); return true;
+async function apiDeleteLesson(lessonId){
+  if(!sbAdmin){toast('관리자 키 필요','err');return;}
+  if(!confirm('이 날 강습을 삭제할까요?'))return;
+  const{error}=await sbAdmin.from('lessons').delete().eq('id',lessonId);
+  if(error){toast('삭제 실패','err');return;}
+  toast('삭제됐어요');loadLessons();
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   RENDER — SETUP PAGE
-═══════════════════════════════════════════════════════════════ */
-function rSetup(){
-  return `
+/* ── RENDER: SETUP ──────────────────────────── */
+function rSetup(){return`
 <div class="setup-wrap">
-  <div class="setup-head">
-    <div class="setup-biglogo">FREEDIVE</div>
-    <div class="setup-tagline">강습 스케줄 & 예약 시스템</div>
-  </div>
+  <div class="setup-logo">FREEDIVE</div>
+  <div class="setup-tag">강습 스케줄 & 예약 시스템</div>
   <div class="setup-card">
     <div class="tabs">
       <button class="tabn on" data-tab="conn">Supabase 연결</button>
-      <button class="tabn" data-tab="sql">SQL 설정 가이드</button>
+      <button class="tabn" data-tab="sql">SQL 가이드</button>
     </div>
-
     <div id="tp-conn">
-      <div class="step-head"><span class="step-num">1</span>Supabase 프로젝트 준비</div>
-      <div class="step-desc">
-        <a href="https://supabase.com" target="_blank" style="color:var(--cyan)">supabase.com</a>에서 무료 계정 생성 후,<br>
-        새 프로젝트를 만드세요. 그 다음 "SQL 설정 가이드" 탭의<br>
-        SQL을 복사해 SQL Editor에서 실행하세요.
-      </div>
-      <div class="step-head"><span class="step-num">2</span>Project URL 과 Anon Key 입력</div>
-      <div class="step-desc">Supabase Dashboard → Settings → API 에서 확인하세요.</div>
-      <div class="fg">
-        <label class="fl">Project URL</label>
-        <input class="fi" id="inp-url" placeholder="https://xxxx.supabase.co" />
-      </div>
-      <div class="fg">
-        <label class="fl">Anon Key (공개 키)</label>
-        <input class="fi" id="inp-anon" placeholder="eyJhbGci..." />
-      </div>
-      <div class="fg">
-        <label class="fl">Service Role Key (관리자용 — 선택)</label>
-        <input class="fi" id="inp-svc" placeholder="eyJhbGci... (나중에 입력 가능)" />
-      </div>
+      <div class="step-h"><span class="step-n">1</span>Supabase 프로젝트 준비</div>
+      <div class="step-d"><a href="https://supabase.com" target="_blank" style="color:var(--cyan)">supabase.com</a> 가입 후 프로젝트를 만들고, SQL 가이드 탭의 SQL을 실행하세요.</div>
+      <div class="step-h"><span class="step-n">2</span>키 입력</div>
+      <div class="step-d">Settings → API Keys → Legacy anon, service_role API keys 탭에서 확인</div>
+      <div class="fg"><label class="fl">Project URL</label><input class="fi" id="inp-url" placeholder="https://xxxx.supabase.co"/></div>
+      <div class="fg"><label class="fl">Anon Key</label><input class="fi" id="inp-anon" placeholder="eyJhbGci..."/></div>
+      <div class="fg"><label class="fl">Service Role Key (관리자용)</label><input class="fi" id="inp-svc" placeholder="eyJhbGci..."/></div>
       <button class="btn btn-primary btn-wide" id="btn-conn">연결하기 →</button>
     </div>
-
     <div id="tp-sql" style="display:none">
-      <div class="step-desc">아래 SQL을 Supabase → SQL Editor에 붙여넣고 실행하세요.</div>
-      <div class="codeblock" id="sql-code">${esc(SQL)}</div>
+      <div class="step-d">Supabase → SQL Editor → New query → 아래 SQL 붙여넣기 → Run</div>
+      <div class="codeblock">${esc(SQL)}</div>
       <button class="btn btn-ghost btn-sm" style="margin-top:10px" id="btn-copy-sql">📋 SQL 복사</button>
     </div>
   </div>
-</div>`;
-}
+</div>`;}
 
-/* ─── MAIN PAGE ─────────────────────────────────────────────── */
-function rMain(){
-  const body = S.loading
-    ? `<div class="loading"><div class="spin"></div>불러오는 중...</div>`
-    : S.slots.length===0
-      ? `<div class="empty"><div class="empty-icon">🌊</div><div class="empty-ttl">등록된 시간대가 없어요</div><div class="empty-dsc">강사가 시간대를 추가하면 여기에 나타나요</div></div>`
-      : `<div class="slots-grid">${S.slots.map(rSlotCard).join('')}</div>`;
-
-  return `
-${rHeader()}
-<main>
-  <div class="page-title">강습 스케줄</div>
-  <div class="page-sub">원하는 시간대에 참여 의사를 남겨주세요 — 2명 이상 모이면 강습이 열려요 🤿</div>
-  <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:var(--txt3)"></div>모집 중</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>2명 이상 모집</div>
-    <div class="legend-item"><div class="legend-dot" style="background:var(--cyan)"></div>강습 확정</div>
-  </div>
-  ${body}
-</main>
-${rJoinModal()}`;
-}
-
-function rSlotCard(slot){
-  const av=slot.availability||[];
-  const mine=av.find(a=>a.user_token===userToken);
-  const n=av.length;
-  const ready=(n>=2 && slot.status==='open');
-  const conf=(slot.status==='confirmed');
-  const d=fmtDate(slot.date);
-
-  const statusEl=conf
-    ? `<div class="card-status cs-confirmed">🤿 강습 확정</div>`
-    : ready
-      ? `<div class="card-status cs-ready">✓ 개설 가능</div>`
-      : `<div class="card-status cs-open">모집 중</div>`;
-
-  const countEl=conf
-    ? `<span class="count-pill cp-full">${n}명 확정</span>`
-    : ready
-      ? `<span class="count-pill cp-ready">${n}명 모집됨</span>`
-      : `<span class="count-pill cp-none">${n}명</span>`;
-
-  const tags=av.length
-    ? av.map(a=>`<span class="ptag${a.user_token===userToken?' mine':''}">${esc(a.name)}</span>`).join('')
-    : `<span class="ptag-empty">아직 아무도 없어요</span>`;
-
-  const actionBtn=conf?''
-    : mine
-      ? `<button class="btn btn-ghost btn-sm" data-a="leave" data-id="${slot.id}">참여 취소</button>`
-      : `<button class="btn btn-primary btn-sm" data-a="join"  data-id="${slot.id}">🤿 나도 가능해요</button>`;
-
-  return `
-<div class="slot-card${ready?' ready':''}${conf?' confirmed':''}">
-  ${statusEl}
-  <div class="card-date-row">
-    <div class="day-num">${d.day}</div>
-    <div class="day-info">
-      <div class="day-month">${d.month}</div>
-      <div class="day-dow">${d.dow}</div>
-    </div>
-  </div>
-  <div class="card-type">${esc(slot.lesson_type)}</div>
-  <div class="card-meta">
-    <div class="meta-item">⏱ ${fmt(slot.start_time)} ~ ${fmt(slot.end_time)}</div>
-    <div class="meta-item">📍 ${esc(slot.location)}</div>
-    ${slot.max_participants?`<div class="meta-item">최대 ${slot.max_participants}명</div>`:''}
-  </div>
-  ${slot.notes?`<div style="font-size:12px;color:var(--txt3);margin-bottom:10px;font-style:italic">${esc(slot.notes)}</div>`:''}
-  <div class="ptcpt-section">
-    <div class="ptcpt-header">
-      <span class="ptcpt-label">참여 가능</span>
-      ${countEl}
-    </div>
-    <div class="ptcpt-tags">${tags}</div>
-  </div>
-  <div class="card-foot">${actionBtn}</div>
-</div>`;
-}
-
-function rJoinModal(){
-  if(S.modal!=='join'||!S.selSlot) return '';
-  const slot=S.slots.find(s=>s.id===S.selSlot); if(!slot) return '';
-  const d=fmtDate(slot.date);
-  return `
-<div class="overlay on" id="ov-join">
-  <div class="modal">
-    <div class="modal-title">참여 가능 표시</div>
-    <div class="modal-sub">${d.full} ${fmt(slot.start_time)} · ${esc(slot.lesson_type)}</div>
-    <div class="fg">
-      <label class="fl">이름 <span style="color:var(--red)">*</span></label>
-      <input class="fi" id="j-name" placeholder="홍길동" />
-    </div>
-    <div class="fg">
-      <label class="fl">연락처 (선택)</label>
-      <input class="fi" id="j-contact" placeholder="010-0000-0000" />
-    </div>
-    <div class="modal-btns">
-      <button class="btn btn-ghost" style="flex:1;justify-content:center" id="btn-jcancel">취소</button>
-      <button class="btn btn-primary" style="flex:2;justify-content:center" id="btn-jsubmit">등록하기 →</button>
-    </div>
-  </div>
-</div>`;
-}
-
-/* ─── ADMIN PAGE ────────────────────────────────────────────── */
-function rAdmin(){
-  const today=new Date().toISOString().split('T')[0];
-  const all=S.slots; const upcoming=all.filter(s=>s.date>=today);
-  const nConf=upcoming.filter(s=>s.status==='confirmed').length;
-  const nReady=upcoming.filter(s=>(s.availability||[]).length>=2&&s.status==='open').length;
-
-  const body=S.loading
-    ?`<div class="loading"><div class="spin"></div>불러오는 중...</div>`
-    :all.length===0
-      ?`<div class="empty"><div class="empty-icon">🌊</div><div class="empty-ttl">시간대가 없어요</div><div class="empty-dsc">상단 "시간대 추가" 버튼으로 시작하세요</div></div>`
-      :all.map(rAdminSlot).join('');
-
-  return `
-${rHeader(true)}
-<main>
-  <div class="stats-row">
-    ${rStat('전체',upcoming.length+'개','var(--txt2)')}
-    ${rStat('강습 확정',nConf+'개','var(--cyan)')}
-    ${rStat('개설 가능',nReady+'개','var(--green)')}
-  </div>
-  ${body}
-</main>
-${rAddSlotModal()}`;
-}
-
-function rStat(lbl,val,clr){
-  return `<div class="stat-card"><div class="stat-val" style="color:${clr}">${val}</div><div class="stat-lbl">${lbl}</div></div>`;
-}
-
-function rAdminSlot(slot){
-  const av=slot.availability||[];
-  const n=av.length;
-  const ready=(n>=2&&slot.status==='open');
-  const conf=(slot.status==='confirmed');
-  const d=fmtDate(slot.date);
-  const scolor=conf?'var(--cyan)':ready?'var(--green)':'var(--txt3)';
-  const slabel=conf?'✓ 확정':ready?'✓ 개설 가능':'모집 중';
-
-  const ptcptHtml=av.length
-    ?`<div class="asl-ptcpt-list">
-        ${av.map(a=>`<div class="ap-tag">${esc(a.name)}${a.contact?`<span class="ap-contact">${esc(a.contact)}</span>`:''}</div>`).join('')}
-      </div>`
-    :`<div style="font-size:12px;color:var(--txt3);font-style:italic">아직 없어요</div>`;
-
-  return `
-<div class="admin-slot">
-  <div class="asl-head">
-    <div>
-      <div class="asl-title">
-        ${d.full} · ${fmt(slot.start_time)} ~ ${fmt(slot.end_time)}
-        <span style="font-size:12px;color:${scolor};margin-left:8px">${slabel}</span>
-      </div>
-      <div class="asl-meta">${esc(slot.lesson_type)} · ${esc(slot.location)} · 최대 ${slot.max_participants}명</div>
-      ${slot.notes?`<div style="font-size:12px;color:var(--txt3);margin-top:3px">${esc(slot.notes)}</div>`:''}
-    </div>
-    <div class="asl-actions">
-      ${!conf?`<button class="btn btn-success btn-sm" data-a="confirm" data-id="${slot.id}">강습 확정</button>`:''}
-      <button class="btn btn-danger btn-sm" data-a="del" data-id="${slot.id}">삭제</button>
-    </div>
-  </div>
-  <div style="font-size:12px;color:var(--txt3);margin-bottom:7px">
-    참여 의사: ${n}명${n<2&&!conf?` <span style="color:var(--amber)">(${2-n}명 더 필요)</span>`:''}
-  </div>
-  ${ptcptHtml}
-</div>`;
-}
-
-function rAddSlotModal(){
-  if(S.modal!=='addslot') return '';
-  const today=new Date().toISOString().split('T')[0];
-  return `
-<div class="overlay on" id="ov-addslot">
-  <div class="modal">
-    <div class="modal-title">시간대 추가</div>
-    <div class="modal-sub">수강생들이 참여 가능 여부를 선택할 시간대를 만들어요</div>
-    <div class="frow">
-      <div class="fg"><label class="fl">날짜</label><input type="date" class="fi" id="s-date" min="${today}" value="${today}" /></div>
-      <div class="fg"><label class="fl">최대 인원</label><input type="number" class="fi" id="s-max" value="6" min="1" max="30" /></div>
-    </div>
-    <div class="frow">
-      <div class="fg"><label class="fl">시작 시간</label><input type="time" class="fi" id="s-st" value="10:00" /></div>
-      <div class="fg"><label class="fl">종료 시간</label><input type="time" class="fi" id="s-et" value="12:00" /></div>
-    </div>
-    <div class="fg"><label class="fl">강습 종류</label><input class="fi" id="s-type" value="기초 강습" placeholder="기초 강습, 심화, 오픈워터..." /></div>
-    <div class="fg"><label class="fl">장소</label><input class="fi" id="s-loc" value="풀장" placeholder="실내 풀장, 바다, 제주..." /></div>
-    <div class="fg"><label class="fl">메모 (선택)</label><input class="fi" id="s-notes" placeholder="준비물, 특이사항..." /></div>
-    <div class="modal-btns">
-      <button class="btn btn-ghost" style="flex:1;justify-content:center" id="btn-ascancel">취소</button>
-      <button class="btn btn-primary" style="flex:2;justify-content:center" id="btn-assubmit">추가하기 →</button>
-    </div>
-  </div>
-</div>`;
-}
-
-/* ─── SHARED HEADER ─────────────────────────────────────────── */
-function rHeader(admin=false){
-  return `
+/* ── RENDER: HEADER ─────────────────────────── */
+function rHeader(admin=false){return`
 <header>
   <div class="logo">FREEDIVE<small>강습 스케줄</small></div>
-  <div class="header-actions">
-    ${admin
-      ?`<span class="admin-badge">관리자</span>
-        <button class="btn btn-ghost btn-sm" id="btn-exit-admin">← 일반 보기</button>
-        <button class="btn btn-primary btn-sm" id="btn-addslot-open">+ 시간대 추가</button>`
-      :`<button class="btn btn-ghost btn-sm" id="btn-admin-mode">관리자 모드</button>
-        <button class="btn btn-ghost btn-sm" id="btn-reset" title="설정 초기화">⚙</button>`
-    }
+  <div style="display:flex;gap:8px;align-items:center">
+    ${admin?`<span class="admin-badge">관리자</span>
+      <button class="btn btn-ghost btn-sm" id="btn-exit">← 일반 보기</button>`
+    :`<button class="btn btn-ghost btn-sm" id="btn-admin">관리자 모드</button>
+      <button class="btn btn-ghost btn-sm" id="btn-reset" title="설정초기화">⚙</button>`}
   </div>
-</header>`;
-}
+</header>`;}
 
-/* ═══════════════════════════════════════════════════════════════
-   MAIN RENDER
-═══════════════════════════════════════════════════════════════ */
+/* ── RENDER: CALENDAR ───────────────────────── */
+function rCalendar(){
+  const today_str=today();
+  const firstDay=new Date(curYear,curMonth,1).getDay();
+  const daysInMonth=new Date(curYear,curMonth+1,0).getDate();
+
+  // lesson lookup by date
+  const lessonMap={};
+  lessons.forEach(l=>{ lessonMap[l.lesson_date]=l; });
+
+  let cells='';
+  // day of week headers
+  DAYS.forEach(d=>{ cells+=`<div class="dow-header">${d}</div>`; });
+  // empty cells before first day
+  for(let i=0;i<firstDay;i++) cells+=`<div class="day-cell empty"></div>`;
+  // day cells
+  for(let d=1;d<=daysInMonth;d++){
+    const ds=dateStr(curYear,curMonth,d);
+    const lesson=lessonMap[ds];
+    const isToday=ds===today_str;
+    let cls='day-cell';
+    let badge='';
+    if(lesson){
+      const n=(lesson.signups||[]).length;
+      const ready=n>=2&&lesson.status==='open';
+      const conf=lesson.status==='confirmed';
+      if(conf)cls+=' confirmed';
+      else if(ready)cls+=' ready';
+      else cls+=' has-lesson';
+      const label=conf?`✓ 확정`:ready?`✓ ${n}명`:`${lesson.lesson_type}`;
+      const bc=conf?'db-confirmed':ready?'db-ready':'db-open';
+      badge=`<div class="day-badges">
+        <div class="day-badge ${bc}">${esc(label)}</div>
+        ${!conf?`<div class="db-count">${n}명 신청</div>`:''}
+      </div>`;
+    }
+    if(isToday)cls+=' today';
+    const dataAttr=lesson?`data-lid="${lesson.id}" data-date="${ds}"`:`data-date="${ds}"`;
+    cells+=`<div class="${cls}" ${dataAttr}><div class="day-num">${d}</div>${badge}</div>`;
+  }
+
+  return`
+${rHeader(S.view==='admin')}
+<main>
+  <div class="cal-nav">
+    <button class="nav-btn" id="btn-prev">‹</button>
+    <div class="cal-title">${curYear} · ${MONTHS[curMonth]}</div>
+    <button class="nav-btn" id="btn-next">›</button>
+  </div>
+  <div class="legend">
+    <div class="leg"><div class="leg-dot" style="background:var(--txt3)"></div>강습 예정</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--green)"></div>2명 이상 신청</div>
+    <div class="leg"><div class="leg-dot" style="background:var(--cyan)"></div>강습 확정</div>
+  </div>
+  <div class="cal-grid">${cells}</div>
+</main>
+${rModal()}`;}
+
+/* ── RENDER: MODAL ──────────────────────────── */
+function rModal(){
+  if(!S.modal)return'';
+
+  // ADD LESSON (admin)
+  if(S.modal==='add-lesson'){
+    const ds=S.selDate||today();
+    return`<div class="overlay on" id="ov"><div class="modal">
+      <div class="modal-title">강습 날짜 추가</div>
+      <div class="modal-sub">수강생들이 신청할 수 있는 날짜를 등록해요</div>
+      <div class="fg"><label class="fl">날짜</label><input type="date" class="fi" id="m-date" value="${ds}" min="${today()}"/></div>
+      <div class="fg"><label class="fl">시간대</label><input class="fi" id="m-time" value="오전 10시~12시" placeholder="오전 10시~12시"/></div>
+      <div class="fg"><label class="fl">강습 종류</label><input class="fi" id="m-type" value="기초 강습" placeholder="기초 강습, 심화..."/></div>
+      <div class="fg"><label class="fl">장소</label><input class="fi" id="m-loc" value="풀장" placeholder="풀장, 바다..."/></div>
+      <div class="fg"><label class="fl">최대 인원</label><input type="number" class="fi" id="m-max" value="6" min="1" max="30"/></div>
+      <div class="fg"><label class="fl">메모 (선택)</label><input class="fi" id="m-notes" placeholder="준비물 등..."/></div>
+      <div class="modal-btns">
+        <button class="btn btn-ghost" style="flex:1;justify-content:center" id="btn-mc">취소</button>
+        <button class="btn btn-primary" style="flex:2;justify-content:center" id="btn-ms">추가하기 →</button>
+      </div>
+    </div></div>`;}
+
+  // LESSON DETAIL
+  if(S.modal==='lesson-detail'&&S.selLesson){
+    const l=S.selLesson;
+    const signups=l.signups||[];
+    const n=signups.length;
+    const ready=n>=2&&l.status==='open';
+    const conf=l.status==='confirmed';
+    const d=new Date(l.lesson_date+'T12:00:00');
+    const dateLabel=`${d.getMonth()+1}월 ${d.getDate()}일 (${DAYS[d.getDay()]})`;
+
+    const statusEl=conf
+      ?`<div class="status-pill sp-confirmed">🤿 강습 확정</div>`
+      :ready?`<div class="status-pill sp-ready">✓ 개설 가능 (${n}명)</div>`
+      :`<div class="status-pill sp-open">모집 중 (${n}명)</div>`;
+
+    const signupItems=signups.length>0
+      ?signups.map(s=>`
+        <div class="signup-item">
+          <div>
+            <div class="signup-name">${esc(s.name)}</div>
+            ${s.contact?`<div class="signup-meta">${esc(s.contact)}</div>`:''}
+          </div>
+          <button class="btn btn-danger btn-sm" data-del="${s.id}" data-name="${esc(s.name)}">취소</button>
+        </div>`).join('')
+      :`<div class="signup-empty">아직 신청자가 없어요</div>`;
+
+    const adminBtns=S.view==='admin'?`
+      <div style="display:flex;gap:7px;margin-bottom:14px;">
+        ${!conf?`<button class="btn btn-success btn-sm" id="btn-confirm-lesson">강습 확정</button>`:''}
+        <button class="btn btn-danger btn-sm" id="btn-del-lesson">날짜 삭제</button>
+      </div>`:'';
+
+    return`<div class="overlay on" id="ov"><div class="modal">
+      <div class="modal-title">${dateLabel}</div>
+      <div class="modal-sub">${esc(l.time_range)} · ${esc(l.location)} · ${esc(l.lesson_type)}</div>
+      ${statusEl}
+      ${adminBtns}
+      <div class="signup-list">${signupItems}</div>
+      ${!conf?`<button class="btn btn-primary btn-wide" id="btn-join">🤿 나도 신청할게요</button>`:''}
+      <div style="margin-top:8px"><button class="btn btn-ghost btn-wide" id="btn-mc">닫기</button></div>
+    </div></div>`;}
+
+  // JOIN FORM
+  if(S.modal==='join'&&S.selLesson){
+    const l=S.selLesson;
+    const d=new Date(l.lesson_date+'T12:00:00');
+    const dateLabel=`${d.getMonth()+1}월 ${d.getDate()}일 · ${esc(l.lesson_type)}`;
+    return`<div class="overlay on" id="ov"><div class="modal">
+      <div class="modal-title">참여 신청</div>
+      <div class="modal-sub">${dateLabel}</div>
+      <div class="fg"><label class="fl">이름 <span style="color:var(--red)">*</span></label>
+        <input class="fi" id="j-name" placeholder="홍길동"/></div>
+      <div class="fg"><label class="fl">연락처 (선택)</label>
+        <input class="fi" id="j-contact" placeholder="010-0000-0000"/></div>
+      <div class="fg"><label class="fl">비밀번호 <span style="color:var(--red)">*</span></label>
+        <input class="fi" id="j-pw" type="password" placeholder="나만 아는 숫자나 단어"/>
+        <div class="fi-hint">⚠ 나중에 신청 취소할 때 필요해요. 꼭 기억하세요!</div>
+      </div>
+      <div class="modal-btns">
+        <button class="btn btn-ghost" style="flex:1;justify-content:center" id="btn-back">← 뒤로</button>
+        <button class="btn btn-primary" style="flex:2;justify-content:center" id="btn-join-submit">신청하기 →</button>
+      </div>
+    </div></div>`;}
+
+  // DELETE CONFIRM
+  if(S.modal==='del-confirm'&&S.delSignup){
+    return`<div class="overlay on" id="ov"><div class="modal">
+      <div class="modal-title">신청 취소</div>
+      <div class="modal-sub">${esc(S.delSignup.name)}님의 신청을 취소할게요</div>
+      <div class="del-confirm">
+        <div class="del-confirm-title">비밀번호 확인</div>
+        <input class="fi" id="del-pw" type="password" placeholder="신청 시 입력한 비밀번호"/>
+      </div>
+      <div class="modal-btns">
+        <button class="btn btn-ghost" style="flex:1;justify-content:center" id="btn-mc">취소</button>
+        <button class="btn btn-danger" style="flex:2;justify-content:center" id="btn-del-confirm">취소 확인</button>
+      </div>
+    </div></div>`;}
+
+  return'';}
+
+/* ── MAIN RENDER ────────────────────────────── */
 function render(){
-  let html;
-  if(!cfg)           html=rSetup();
-  else if(S.view==='admin') html=rAdmin();
-  else               html=rMain();
-  document.getElementById('app').innerHTML=html;
-  bind();
-}
+  document.getElementById('app').innerHTML=cfg?rCalendar():rSetup();
+  bind();}
 
-/* ═══════════════════════════════════════════════════════════════
-   EVENT BINDING
-═══════════════════════════════════════════════════════════════ */
+/* ── EVENTS ─────────────────────────────────── */
 function bind(){
   const $=id=>document.getElementById(id);
+  const on=(id,ev,fn)=>{const el=$(id);if(el)el.addEventListener(ev,fn);};
+  const val=id=>{const el=$(id);return el?el.value.trim():'';};
+  const closeModal=()=>{S.modal=null;S.delSignup=null;render();};
 
-  /* ── Setup page ── */
-  qsa('.tabn').forEach(t=>t.addEventListener('click',()=>{
-    qsa('.tabn').forEach(x=>x.classList.remove('on')); t.classList.add('on');
+  // tabs
+  document.querySelectorAll('.tabn').forEach(t=>t.addEventListener('click',()=>{
+    document.querySelectorAll('.tabn').forEach(x=>x.classList.remove('on'));t.classList.add('on');
     const w=t.dataset.tab;
-    sel('#tp-conn',`display:${w==='conn'?'':'none'}`);
-    sel('#tp-sql', `display:${w==='sql' ?'':'none'}`);
+    const cc=$('tp-conn'),cs=$('tp-sql');
+    if(cc)cc.style.display=w==='conn'?'':'none';
+    if(cs)cs.style.display=w==='sql'?'':'none';
   }));
 
-  on('btn-conn', 'click', ()=>{
-    const url=val('inp-url'), anon=val('inp-anon'), svc=val('inp-svc');
-    if(!url||!anon){ toast('URL과 Anon Key를 입력해주세요','err'); return; }
-    cfg={url,anonKey:anon}; lsJ('fd_cfg',cfg);
-    if(svc){ admK=svc; ls('fd_adm',svc); }
-    initSB(); loadSlots();
+  // setup
+  on('btn-conn','click',()=>{
+    const url=val('inp-url'),anon=val('inp-anon'),svc=val('inp-svc');
+    if(!url||!anon){toast('URL과 Anon Key를 입력해주세요','err');return;}
+    cfg={url,anonKey:anon};lsJ('fd_cfg',cfg);
+    if(svc){admK=svc;ls('fd_adm',svc);}
+    initSB();loadLessons();
   });
+  on('btn-copy-sql','click',()=>navigator.clipboard.writeText(SQL).then(()=>toast('SQL 복사됐어요!')));
 
-  on('btn-copy-sql','click',()=>{
-    navigator.clipboard.writeText(SQL).then(()=>toast('SQL이 복사되었어요!'));
-  });
-
-  /* ── Header ── */
-  on('btn-admin-mode','click',()=>{
+  // header
+  on('btn-admin','click',()=>{
     if(!sbAdmin){
-      const key=prompt('서비스 롤 키를 입력하세요\n(Supabase → Settings → API → service_role)');
-      if(!key) return;
-      admK=key; ls('fd_adm',key);
-      sbAdmin=supabase.createClient(cfg.url,key);
+      const k=prompt('서비스 롤 키를 입력하세요\n(Settings → API Keys → Legacy → service_role)');
+      if(!k)return;admK=k;ls('fd_adm',k);sbAdmin=supabase.createClient(cfg.url,k);
     }
-    S.view='admin'; render();
+    S.view='admin';render();
   });
-
-  on('btn-exit-admin','click',()=>{ S.view='main'; render(); });
-
+  on('btn-exit','click',()=>{S.view='main';render();});
   on('btn-reset','click',()=>{
-    if(!confirm('설정을 초기화하고 다시 연결할까요?')) return;
+    if(!confirm('설정 초기화할까요?'))return;
     ['fd_cfg','fd_adm'].forEach(k=>localStorage.removeItem(k));
-    cfg=null; admK=''; sb=null; sbAdmin=null; render();
+    cfg=null;admK='';sb=null;sbAdmin=null;render();
   });
 
-  on('btn-addslot-open','click',()=>{ S.modal='addslot'; render(); });
-
-  /* ── Slot card actions ── */
-  qsa('[data-a="join"]').forEach(b=>b.addEventListener('click',()=>{
-    S.selSlot=b.dataset.id; S.modal='join'; render();
-  }));
-  qsa('[data-a="leave"]').forEach(b=>b.addEventListener('click',async()=>{
-    if(await apiLeave(b.dataset.id)) loadSlots();
-  }));
-  qsa('[data-a="confirm"]').forEach(b=>b.addEventListener('click',()=>apiConfirm(b.dataset.id)));
-  qsa('[data-a="del"]').forEach(b=>b.addEventListener('click',()=>apiDelete(b.dataset.id)));
-
-  /* ── Join modal ── */
-  on('btn-jcancel','click',()=>closeModal());
-  on('btn-jsubmit','click',async()=>{
-    const name=val('j-name');
-    if(!name){ toast('이름을 입력해주세요','err'); return; }
-    const btn=$('btn-jsubmit'); if(btn) btn.disabled=true;
-    const ok=await apiJoin(S.selSlot, name, val('j-contact'));
-    if(btn) btn.disabled=false;
-    if(ok){ closeModal(); loadSlots(); }
+  // calendar nav
+  on('btn-prev','click',()=>{
+    if(curMonth===0){curMonth=11;curYear--;}else curMonth--;
+    loadLessons();
   });
-  ovClose('ov-join');
-
-  /* ── Add slot modal ── */
-  on('btn-ascancel','click',()=>closeModal());
-  on('btn-assubmit','click',async()=>{
-    const f={
-      date:val('s-date'), st:val('s-st'), et:val('s-et'),
-      type:val('s-type'), loc:val('s-loc'),
-      max:val('s-max'), notes:val('s-notes')
-    };
-    if(!f.date||!f.st){ toast('날짜와 시작 시간을 입력해주세요','err'); return; }
-    const btn=$('btn-assubmit'); if(btn) btn.disabled=true;
-    const ok=await apiAddSlot(f);
-    if(btn) btn.disabled=false;
-    if(ok){ closeModal(); loadSlots(); }
+  on('btn-next','click',()=>{
+    if(curMonth===11){curMonth=0;curYear++;}else curMonth++;
+    loadLessons();
   });
-  ovClose('ov-addslot');
 
-  /* ── Enter key on inputs ── */
-  on('j-name','keydown',e=>{ if(e.key==='Enter') $('btn-jsubmit')?.click(); });
-  on('j-contact','keydown',e=>{ if(e.key==='Enter') $('btn-jsubmit')?.click(); });
-  on('inp-url','keydown',e=>{ if(e.key==='Enter') $('btn-conn')?.click(); });
+  // day cell click
+  document.querySelectorAll('.day-cell:not(.empty)').forEach(cell=>{
+    cell.addEventListener('click',()=>{
+      const lid=cell.dataset.lid;
+      const ds=cell.dataset.date;
+      if(lid){
+        const lesson=lessons.find(l=>l.id===lid);
+        if(lesson){S.selLesson=lesson;S.modal='lesson-detail';render();}
+      } else if(S.view==='admin'){
+        S.selDate=ds;S.modal='add-lesson';render();
+      } else {
+        toast('강사가 아직 이 날짜를 열지 않았어요');
+      }
+    });
+  });
+
+  // add lesson modal
+  on('btn-mc','click',closeModal);
+  on('btn-ms','click',async()=>{
+    const f={date:val('m-date'),time:val('m-time'),type:val('m-type'),
+      loc:val('m-loc'),max:val('m-max'),notes:val('m-notes')};
+    if(!f.date){toast('날짜를 선택해주세요','err');return;}
+    const btn=$('btn-ms');if(btn)btn.disabled=true;
+    const ok=await apiAddLesson(f);
+    if(btn)btn.disabled=false;
+    if(ok){S.modal=null;loadLessons();}
+  });
+
+  // lesson detail
+  on('btn-join','click',()=>{S.modal='join';render();});
+  on('btn-confirm-lesson','click',()=>{if(S.selLesson)apiConfirm(S.selLesson.id);});
+  on('btn-del-lesson','click',()=>{if(S.selLesson)apiDeleteLesson(S.selLesson.id).then(()=>{S.modal=null;S.selLesson=null;});});
+
+  // delete signup
+  document.querySelectorAll('[data-del]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      S.delSignup={id:btn.dataset.del,name:btn.dataset.name};
+      S.modal='del-confirm';render();
+    });
+  });
+
+  // join form
+  on('btn-back','click',()=>{S.modal='lesson-detail';render();});
+  on('btn-join-submit','click',async()=>{
+    const name=val('j-name'),pw=val('j-pw');
+    if(!name){toast('이름을 입력해주세요','err');return;}
+    if(!pw){toast('비밀번호를 입력해주세요','err');return;}
+    const btn=$('btn-join-submit');if(btn)btn.disabled=true;
+    const ok=await apiSignup(S.selLesson.id,name,val('j-contact'),pw);
+    if(btn)btn.disabled=false;
+    if(ok){S.modal=null;loadLessons();}
+  });
+  on('j-pw','keydown',e=>{if(e.key==='Enter')$('btn-join-submit')?.click();});
+
+  // delete confirm
+  on('btn-del-confirm','click',async()=>{
+    const entered=val('del-pw');
+    const lesson=lessons.find(l=>(l.signups||[]).find(s=>s.id===S.delSignup.id));
+    const signup=lesson?.signups?.find(s=>s.id===S.delSignup.id);
+    if(!signup){toast('신청 정보를 찾을 수 없어요','err');return;}
+    if(signup.password!==entered){toast('비밀번호가 틀렸어요 ❌','err');return;}
+    const ok=await apiDeleteSignup(S.delSignup.id);
+    if(ok){
+      S.modal=null;S.delSignup=null;
+      // refresh lesson signups
+      await loadLessons();
+      // reopen detail if lesson still exists
+      const updated=lessons.find(l=>l.id===signup.lesson_id);
+      if(updated){S.selLesson=updated;S.modal='lesson-detail';render();}
+    }
+  });
+  on('del-pw','keydown',e=>{if(e.key==='Enter')$('btn-del-confirm')?.click();});
+
+  // overlay backdrop
+  const ov=$('ov');
+  if(ov)ov.addEventListener('click',e=>{if(e.target===ov)closeModal();});
 }
 
-/* ── small utils ── */
-function qsa(sel){ return document.querySelectorAll(sel); }
-function on(id,ev,fn){ const el=document.getElementById(id); if(el) el.addEventListener(ev,fn); }
-function val(id){ const el=document.getElementById(id); return el?el.value.trim():''; }
-function sel(q,s){ const el=document.querySelector(q); if(el) el.setAttribute('style',s); }
-function closeModal(){ S.modal=null; S.selSlot=null; render(); }
-function ovClose(id){ const el=document.getElementById(id); if(el) el.addEventListener('click',e=>{ if(e.target===el) closeModal(); }); }
-
-/* ═══════════════════════════════════════════════════════════════
-   INIT
-═══════════════════════════════════════════════════════════════ */
+/* ── INIT ───────────────────────────────────── */
 initSB();
 render();
-if(cfg) loadSlots();
+if(cfg)loadLessons();
 </script>
 </body>
 </html>
