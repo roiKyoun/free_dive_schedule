@@ -412,8 +412,8 @@ let curLang = ls('fd_lang')||'ko';
 let T = TRANS[curLang];
 
 const PRESET = {
-  url:     '',   // ← Supabase Project URL
-  anonKey: ''    // ← anon key (eyJ...)
+  url:     'https://azbkjduhazribkutpttz.supabase.co',   // ← Supabase Project URL
+  anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImF6YmtqZHVoYXpyaWJrdXRwdHR6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA5MjQ5NTAsImV4cCI6MjA5NjUwMDk1MH0.iRgtBg5Bhyf3VoltueO4D7TKoSpedCDeeqVgxMZBdMY'    // ← anon key (eyJ...)
 };
 
 let cfg = lsJ('fd_cfg')||(PRESET.anonKey?PRESET:null);
